@@ -7,6 +7,8 @@ import {
   IsObject,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import { DefaultSuccessResponseDto } from '../../utils/dto/response.dto';
+import { UserFull } from '../../users/dto/create-user.dto';
 
 export class CreateMarriageDto {
   @ApiProperty()
@@ -65,7 +67,7 @@ export class CreateMarriageDto {
   status?: string;
 }
 
-export class DefaultColumnsResponse extends CreateMarriageDto {
+export class MarriageFull extends CreateMarriageDto {
   @ApiProperty()
   readonly id: number;
 
@@ -74,4 +76,16 @@ export class DefaultColumnsResponse extends CreateMarriageDto {
 
   @ApiProperty()
   readonly updatedAt: Date;
+}
+
+export class MarriageListResponseDto extends DefaultSuccessResponseDto<
+  MarriageFull[]
+> {
+  @ApiProperty({ type: [MarriageFull] })
+  data: MarriageFull[];
+}
+
+export class MarriageResponseDto extends DefaultSuccessResponseDto<MarriageFull> {
+  @ApiProperty({ type: MarriageFull })
+  data: MarriageFull;
 }

@@ -10,12 +10,20 @@ import {
   Query,
 } from '@nestjs/common';
 import { MarriageService } from './marriages.service';
-import { CreateMarriageDto } from './dto/create-marriage.dto';
+import {
+  CreateMarriageDto,
+  MarriageResponseDto,
+  MarriageListResponseDto,
+} from './dto/create-marriage.dto';
 import { UpdateMarriageDto } from './dto/update-marriage.dto';
 import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { DefaultColumnsResponse } from './dto/create-marriage.dto';
+
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
+import {
+  createErrorResponse,
+  createSuccessResponse,
+} from '../utils/dto/response.dto';
 
 @ApiTags('marriages')
 @Controller('marriages')
@@ -26,29 +34,39 @@ export class MarriageController {
   @ApiResponse({
     status: 201,
     isArray: false,
-    type: DefaultColumnsResponse,
+    type: MarriageResponseDto,
   })
   @ApiBearerAuth('access-token')
   @Post()
-  create(@Body() createMarriageDto: CreateMarriageDto) {
-    return this.marriagesService.create(createMarriageDto);
+  async create(@Body() createMarriageDto: CreateMarriageDto) {
+    try {
+      const resp = await this.marriagesService.create(createMarriageDto);
+      return createSuccessResponse(resp);
+    } catch (err) {
+      return createErrorResponse(err);
+    }
   }
 
   @ApiResponse({
     status: 200,
     isArray: true,
-    type: DefaultColumnsResponse,
+    type: MarriageListResponseDto,
   })
   @ApiBearerAuth('access-token')
   @Get()
-  findAll() {
-    return this.marriagesService.findAll();
+  async findAll() {
+    try {
+      const resp = await this.marriagesService.findAll();
+      return createSuccessResponse(resp);
+    } catch (err) {
+      return createErrorResponse(err);
+    }
   }
 
   @ApiResponse({
     status: 200,
     isArray: false,
-    type: DefaultColumnsResponse,
+    type: MarriageResponseDto,
   })
   @ApiBearerAuth('access-token')
   @Get(':id')
@@ -59,7 +77,7 @@ export class MarriageController {
   @ApiResponse({
     status: 200,
     isArray: false,
-    type: DefaultColumnsResponse,
+    type: MarriageResponseDto,
   })
   @ApiBearerAuth('access-token')
   @Patch(':id')
@@ -79,7 +97,7 @@ export class MarriageController {
   @ApiResponse({
     status: 200,
     isArray: true,
-    type: DefaultColumnsResponse,
+    type: MarriageListResponseDto,
   })
   @ApiBearerAuth('access-token')
   @Get('dates/filter')

@@ -1,6 +1,7 @@
 import { ApiProperty, PartialType } from '@nestjs/swagger';
 import { IsEmail, IsEnum, IsNotEmpty, IsString } from 'class-validator';
 import { Role } from '../../auth/models/roles.model';
+import { DefaultSuccessResponseDto } from '../../utils/dto/response.dto';
 
 export class CreateUserDto {
   @ApiProperty()
@@ -32,7 +33,7 @@ export class CreateAdminDto extends CreateUserDto {
 
 export class UpdateUserDto extends PartialType(CreateUserDto) {}
 
-export class DefaultColumnsResponse extends CreateUserDto {
+export class UserFull extends CreateUserDto {
   @ApiProperty()
   readonly id: number;
 
@@ -44,4 +45,16 @@ export class DefaultColumnsResponse extends CreateUserDto {
 
   @ApiProperty()
   readonly role: Role;
+}
+
+export class UsersListResponseDto extends DefaultSuccessResponseDto<
+  UserFull[]
+> {
+  @ApiProperty({ type: [UserFull] })
+  data: UserFull[];
+}
+
+export class UserResponseDto extends DefaultSuccessResponseDto<UserFull> {
+  @ApiProperty({ type: UserFull })
+  data: UserFull;
 }

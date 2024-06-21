@@ -22,10 +22,15 @@ import { Role } from '../../auth/models/roles.model';
 import {
   CreateAdminDto,
   CreateUserDto,
-  DefaultColumnsResponse,
   UpdateUserDto,
+  UsersListResponseDto,
+  UserResponseDto,
 } from '../dto/create-user.dto';
 import { UsersService } from '../services/users.service';
+import {
+  createErrorResponse,
+  createSuccessResponse,
+} from '../../utils/dto/response.dto';
 
 @ApiTags('users')
 @Controller('users')
@@ -36,60 +41,90 @@ export class UsersController {
   @ApiOperation({ summary: 'create a user with user role' })
   @ApiResponse({
     status: 201,
-    type: DefaultColumnsResponse,
+    type: UserResponseDto,
   })
   @Public()
   @Post()
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.usersService.create(createUserDto);
+  async create(@Body() createUserDto: CreateUserDto) {
+    try {
+      const resp = await this.usersService.create(createUserDto);
+      return createSuccessResponse(resp);
+    } catch (err) {
+      return createErrorResponse(err);
+    }
   }
 
   @ApiOperation({ summary: 'create a user with admin role' })
   @ApiResponse({
     status: 201,
-    type: DefaultColumnsResponse,
+    type: UserResponseDto,
   })
   @ApiBearerAuth('access-token')
   @Roles(Role.ADMIN)
   @Post('admin')
-  createAdmin(@Body() creatAdminDto: CreateAdminDto) {
-    return this.usersService.create(creatAdminDto);
+  async createAdmin(@Body() creatAdminDto: CreateAdminDto) {
+    try {
+      const resp = await this.usersService.create(creatAdminDto);
+      return createSuccessResponse(resp);
+    } catch (err) {
+      return createErrorResponse(err);
+    }
   }
 
   @ApiResponse({
     status: 200,
     isArray: true,
-    type: DefaultColumnsResponse,
+    type: UsersListResponseDto,
   })
   @ApiBearerAuth('access-token')
   @Roles(Role.ADMIN)
   @Get()
-  findAll() {
-    return this.usersService.findAll();
+  async findAll() {
+    try {
+      const resp = await this.usersService.findAll();
+      return createSuccessResponse(resp);
+    } catch (err) {
+      return createErrorResponse(err);
+    }
   }
 
   @ApiBearerAuth('access-token')
   @ApiResponse({
     status: 200,
-    type: DefaultColumnsResponse,
+    type: UserResponseDto,
   })
   @Roles(Role.ADMIN)
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.usersService.findOne(+id);
+  async findOne(@Param('id') id: string) {
+    try {
+      const resp = await this.usersService.findOne(+id);
+      return createSuccessResponse(resp);
+    } catch (err) {
+      return createErrorResponse(err);
+    }
   }
 
   @ApiBearerAuth('access-token')
   @Roles(Role.ADMIN)
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.usersService.update(+id, updateUserDto);
+  async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
+    try {
+      const resp = await this.usersService.update(+id, updateUserDto);
+      return createSuccessResponse(resp);
+    } catch (err) {
+      return createErrorResponse(err);
+    }
   }
 
   @ApiBearerAuth('access-token')
   @Roles(Role.ADMIN)
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.usersService.remove(+id);
+  async remove(@Param('id') id: string) {
+    try {
+      const resp = await this.usersService.remove(+id);
+      return createSuccessResponse([]);
+    } catch (err) {
+      return createErrorResponse(err);
+    }
   }
 }
