@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import { MarriageService } from './marriages.service';
 import { CreateMarriageDto } from './dto/create-marriage.dto';
@@ -16,14 +17,14 @@ import { DefaultColumnsResponse } from './dto/create-marriage.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 
-@ApiTags('marriages') // put the name of the controller in swagger
+@ApiTags('marriages')
 @Controller('marriages')
-@UseGuards(JwtAuthGuard, RolesGuard) //  makes the all routs as private by default
+@UseGuards(JwtAuthGuard, RolesGuard)
 export class MarriageController {
   constructor(private readonly marriagesService: MarriageService) {}
 
   @ApiResponse({
-    status: 200,
+    status: 201,
     isArray: false,
     type: DefaultColumnsResponse,
   })
@@ -73,5 +74,18 @@ export class MarriageController {
   @Delete(':id')
   remove(@Param('id') id: number) {
     return this.marriagesService.remove(id);
+  }
+
+  @ApiResponse({
+    status: 200,
+    isArray: true,
+    type: DefaultColumnsResponse,
+  })
+  @ApiBearerAuth('access-token')
+  @Get('dates')
+  findBetweenDates() {
+    const fromDate = new Date();
+    const toDate = new Date();
+    return this.marriagesService.findBetweenDates(fromDate, toDate);
   }
 }

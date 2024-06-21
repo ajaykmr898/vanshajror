@@ -27,9 +27,9 @@ import {
 } from '../dto/create-user.dto';
 import { UsersService } from '../services/users.service';
 
-@ApiTags('users') // put the name of the controller in swagger
+@ApiTags('users')
 @Controller('users')
-@UseGuards(JwtAuthGuard, RolesGuard) //  makes the all routs as private by default
+@UseGuards(JwtAuthGuard, RolesGuard)
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
@@ -38,7 +38,7 @@ export class UsersController {
     status: 201,
     type: DefaultColumnsResponse,
   })
-  @Public() // makes the endpoint accessible to all
+  @Public()
   @Post()
   create(@Body() createUserDto: CreateUserDto) {
     return this.usersService.create(createUserDto);
@@ -49,8 +49,8 @@ export class UsersController {
     status: 201,
     type: DefaultColumnsResponse,
   })
-  @ApiBearerAuth('access-token') // in the swagger documentation, a bearer token is required to access this endpoint
-  @Roles(Role.ADMIN) // makes the endpoint accessible only by the admin
+  @ApiBearerAuth('access-token')
+  @Roles(Role.ADMIN)
   @Post('admin')
   createAdmin(@Body() creatAdminDto: CreateAdminDto) {
     return this.usersService.create(creatAdminDto);

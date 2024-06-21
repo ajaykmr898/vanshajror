@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, Between } from 'typeorm';
 import { Marriage } from './entities/marriage.entity';
 import { CreateMarriageDto } from './dto/create-marriage.dto';
 import { UpdateMarriageDto } from './dto/update-marriage.dto';
@@ -50,5 +50,13 @@ export class MarriageService {
     if (result.affected === 0) {
       throw new NotFoundException(`Marriage  with ID ${id} not found`);
     }
+  }
+
+  async findBetweenDates(from: Date, to: Date): Promise<Marriage[]> {
+    return this.marriageRepository.find({
+      where: {
+        created_at: Between(from, to),
+      },
+    });
   }
 }
