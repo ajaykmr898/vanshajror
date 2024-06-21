@@ -82,10 +82,10 @@ export class MarriageController {
     type: DefaultColumnsResponse,
   })
   @ApiBearerAuth('access-token')
-  @Get('dates')
-  findBetweenDates() {
-    const fromDate = new Date();
-    const toDate = new Date();
+  @Get('dates/filter')
+  findBetweenDates(@Query('from') from: string, @Query('to') to: string) {
+    const fromDate = new Date(from);
+    const toDate = new Date(to);
     return this.marriagesService.findBetweenDates(fromDate, toDate);
   }
 }
