@@ -41,8 +41,11 @@ async function bootstrap() {
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('docs', app, document); //localhost:3000/docs | localhost:8080/docs to get info of the API
-
+  //SwaggerModule.setup('docs', app, document); //localhost:3000/docs | localhost:8080/docs to get info of the API
+  SwaggerModule.setup('docs', app, document, {
+    customCssUrl:
+      'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.5/swagger-ui.min.css',
+  });
   await app.listen(port || 3000);
 }
 bootstrap();
