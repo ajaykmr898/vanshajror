@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, Between } from 'typeorm';
+import { Repository, Between, Like } from 'typeorm';
 import { Marriage } from './entities/marriage.entity';
 import { CreateMarriageDto } from './dto/create-marriage.dto';
 import { UpdateMarriageDto } from './dto/update-marriage.dto';
@@ -52,11 +52,51 @@ export class MarriageService {
     }
   }
 
-  async findBetweenDates(from: Date, to: Date): Promise<Marriage[]> {
+  async findFilters({
+    fromDate,
+    toDate,
+    gender,
+    poi,
+    study,
+    status,
+    name,
+    phone,
+    email,
+  }): Promise<Marriage[]> {
+    const where: any = {
+      created_at: Between(fromDate, toDate),
+    };
+
+    if (gender) {
+      where.gender = gender;
+    }
+
+    /*if (poi) {
+      where.poi = Like(`%${poi}%`);
+    }*/
+
+    if (study) {
+      where.study = Like(`%${study}%`);
+    }
+
+    if (name) {
+      where.name = Like(`%${name}%`);
+    }
+
+    if (phone) {
+      where.phone = Like(`%${phone}%`);
+    }
+
+    if (email) {
+      where.email = Like(`%${email}%`);
+    }
+
+    if (status) {
+      where.status = status;
+    }
+
     return this.marriageRepository.find({
-      where: {
-        created_at: Between(from, to),
-      },
+      where,
     });
   }
 }

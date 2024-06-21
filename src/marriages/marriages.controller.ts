@@ -83,9 +83,30 @@ export class MarriageController {
   })
   @ApiBearerAuth('access-token')
   @Get('dates/filter')
-  findBetweenDates(@Query('from') from: string, @Query('to') to: string) {
+  findBetweenDates(
+    @Query('from') from: string,
+    @Query('to') to: string,
+    @Query('gender') gender: string,
+    @Query('poi') poi: object,
+    @Query('study') study: string,
+    @Query('status') status: string,
+    @Query('name') name: string,
+    @Query('phone') phone: string,
+    @Query('email') email: string,
+  ) {
     const fromDate = new Date(from);
     const toDate = new Date(to);
-    return this.marriagesService.findBetweenDates(fromDate, toDate);
+
+    return this.marriagesService.findFilters({
+      fromDate,
+      toDate,
+      gender,
+      poi,
+      study,
+      status,
+      name,
+      phone,
+      email,
+    });
   }
 }
