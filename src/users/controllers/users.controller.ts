@@ -33,7 +33,7 @@ import { UsersService } from '../services/users.service';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @ApiOperation({ summary: 'create a user with customer role' })
+  @ApiOperation({ summary: 'create a user with user role' })
   @ApiResponse({
     status: 201,
     type: DefaultColumnsResponse,
