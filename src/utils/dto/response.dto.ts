@@ -33,9 +33,14 @@ export function createSuccessResponse<T>(
   };
 }
 
-export function createErrorResponse<T>(error: T, message = 'Request error') {
+export function createErrorResponse<T>(
+  error: T,
+  status = 500,
+  message = 'Request error',
+) {
   return {
     success: false,
+    status,
     message,
     error,
   };
