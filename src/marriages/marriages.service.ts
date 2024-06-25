@@ -4,6 +4,7 @@ import { Repository, Between, Like } from 'typeorm';
 import { Marriage } from './entities/marriage.entity';
 import { CreateMarriageDto } from './dto/create-marriage.dto';
 import { UpdateMarriageDto } from './dto/update-marriage.dto';
+import { createErrorResponse } from '../utils/dto/response.dto';
 
 @Injectable()
 export class MarriageService {
@@ -26,7 +27,9 @@ export class MarriageService {
       where: { id },
     });
     if (!marriage) {
-      throw new NotFoundException(`Marriage  with ID ${id} not found`);
+      throw new NotFoundException(
+        createErrorResponse(`Marriage  with ID ${id} not found`),
+      );
     }
     return marriage;
   }
@@ -40,7 +43,9 @@ export class MarriageService {
       where: { id },
     });
     if (!updatedMarriage) {
-      throw new NotFoundException(`Marriage  with ID ${id} not found`);
+      throw new NotFoundException(
+        createErrorResponse(`Marriage  with ID ${id} not found`),
+      );
     }
     return updatedMarriage;
   }
@@ -48,7 +53,9 @@ export class MarriageService {
   async remove(id: number): Promise<void> {
     const result = await this.marriageRepository.delete(id);
     if (result.affected === 0) {
-      throw new NotFoundException(`Marriage  with ID ${id} not found`);
+      throw new NotFoundException(
+        createErrorResponse(`Marriage  with ID ${id} not found`),
+      );
     }
   }
 

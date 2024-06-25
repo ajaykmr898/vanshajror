@@ -13,6 +13,7 @@ import {
   UpdateUserDto,
 } from '../dto/create-user.dto';
 import { User } from '../entities/user.entity';
+import { createErrorResponse } from '../../utils/dto/response.dto';
 
 @Injectable()
 export class UsersService {
@@ -27,7 +28,7 @@ export class UsersService {
     });
 
     if (user) {
-      throw new BadRequestException();
+      throw new BadRequestException(createErrorResponse('bad request'));
     }
 
     const createdUser = await this.userRepository.create(createUserDto);
@@ -68,7 +69,9 @@ export class UsersService {
       ...updateUserDto,
     });
     if (!user) {
-      throw new NotFoundException(`User with id ${id} does not exist`);
+      throw new NotFoundException(
+        createErrorResponse(`User with id ${id} does not exist`),
+      );
     }
     return this.userRepository.save(user);
   }
@@ -77,7 +80,9 @@ export class UsersService {
     const user = await this.userRepository.findOne({ where: { id } });
 
     if (!user) {
-      throw new NotFoundException(`User with id ${id} does not exist`);
+      throw new NotFoundException(
+        createErrorResponse(`User with id ${id} does not exist`),
+      );
     }
 
     return this.userRepository.remove(user);
