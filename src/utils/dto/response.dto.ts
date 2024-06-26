@@ -21,27 +21,3 @@ export class DefaultErrorResponseDto {
   @ApiProperty({ example: 'Request successful' })
   error: object;
 }
-
-export function createSuccessResponse<T>(
-  data: T,
-  message = 'Request successful',
-) {
-  return {
-    success: true,
-    message,
-    data,
-  };
-}
-
-export function createErrorResponse<T>(
-  error: T,
-  status = 500,
-  message = 'Request error',
-) {
-  return {
-    success: false,
-    status,
-    message,
-    error,
-  };
-}

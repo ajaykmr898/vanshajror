@@ -20,10 +20,6 @@ import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
-import {
-  createErrorResponse,
-  createSuccessResponse,
-} from '../utils/dto/response.dto';
 
 @ApiTags('marriages')
 @Controller('marriages')
@@ -41,9 +37,10 @@ export class MarriageController {
   async create(@Body() createMarriageDto: CreateMarriageDto) {
     try {
       const resp = await this.marriagesService.create(createMarriageDto);
-      return createSuccessResponse(resp);
+      return resp;
+      //return createSuccessResponse(resp);
     } catch (err) {
-      return createErrorResponse(err);
+      //return createErrorResponse(err);
     }
   }
 
@@ -57,9 +54,10 @@ export class MarriageController {
   async findAll() {
     try {
       const resp = await this.marriagesService.findAll();
-      return createSuccessResponse(resp);
+      return resp;
+      //return createSuccessResponse(resp);
     } catch (err) {
-      return createErrorResponse(err);
+      //return createErrorResponse(err);
     }
   }
 
@@ -73,9 +71,10 @@ export class MarriageController {
   findOne(@Param('id') id: number) {
     try {
       let resp = this.marriagesService.findOne(id);
-      return createSuccessResponse(resp);
+      return resp;
+      //return createSuccessResponse(resp);
     } catch (err) {
-      createErrorResponse(err);
+      //return createErrorResponse(err);
     }
   }
 

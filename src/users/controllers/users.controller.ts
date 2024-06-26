@@ -27,10 +27,6 @@ import {
   UserResponseDto,
 } from '../dto/create-user.dto';
 import { UsersService } from '../services/users.service';
-import {
-  createErrorResponse,
-  createSuccessResponse,
-} from '../../utils/dto/response.dto';
 
 @ApiTags('users')
 @Controller('users')
@@ -48,9 +44,10 @@ export class UsersController {
   async create(@Body() createUserDto: CreateUserDto) {
     try {
       const resp = await this.usersService.create(createUserDto);
-      return createSuccessResponse(resp);
+      return resp;
+      //return createSuccessResponse(resp);
     } catch (err) {
-      return createErrorResponse(err);
+      //return createErrorResponse(err);
     }
   }
 
@@ -65,9 +62,10 @@ export class UsersController {
   async createAdmin(@Body() creatAdminDto: CreateAdminDto) {
     try {
       const resp = await this.usersService.create(creatAdminDto);
-      return createSuccessResponse(resp);
+      return resp;
+      //return createSuccessResponse(resp);
     } catch (err) {
-      return createErrorResponse(err);
+      //return createErrorResponse(err);
     }
   }
 
@@ -82,9 +80,10 @@ export class UsersController {
   async findAll() {
     try {
       const resp = await this.usersService.findAll();
-      return createSuccessResponse(resp);
+      return resp;
+      //return createSuccessResponse(resp);
     } catch (err) {
-      return createErrorResponse(err);
+      //return createErrorResponse(err);
     }
   }
 
@@ -98,9 +97,10 @@ export class UsersController {
   async findOne(@Param('id') id: string) {
     try {
       const resp = await this.usersService.findOne(+id);
-      return createSuccessResponse(resp);
+      return resp;
+      //return createSuccessResponse(resp);
     } catch (err) {
-      return createErrorResponse(err);
+      //return createErrorResponse(err);
     }
   }
 
@@ -110,9 +110,10 @@ export class UsersController {
   async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     try {
       const resp = await this.usersService.update(+id, updateUserDto);
-      return createSuccessResponse(resp);
+      return resp;
+      //return createSuccessResponse(resp);
     } catch (err) {
-      return createErrorResponse(err);
+      //return createErrorResponse(err);
     }
   }
 
@@ -122,9 +123,10 @@ export class UsersController {
   async remove(@Param('id') id: string) {
     try {
       const resp = await this.usersService.remove(+id);
-      return createSuccessResponse([]);
+      return resp;
+      //return createSuccessResponse([]);
     } catch (err) {
-      return createErrorResponse(err);
+      //return createErrorResponse(err);
     }
   }
 }
