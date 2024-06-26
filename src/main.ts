@@ -3,10 +3,14 @@ import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
+import { ResponseFormatInterceptor } from './utils/interceptors/response.interceptor';
+import { AllExceptionsFilter } from './utils/filters/exceptions.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const configService = app.get(ConfigService);
+  app.useGlobalInterceptors(new ResponseFormatInterceptor());
+  app.useGlobalFilters(new AllExceptionsFilter());
 
   const enableCors = configService.get<boolean>('ENABLE_CORS');
   const port = configService.get<number>('DATABASE_PORT');
