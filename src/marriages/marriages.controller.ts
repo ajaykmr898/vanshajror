@@ -71,7 +71,12 @@ export class MarriageController {
   @ApiBearerAuth('access-token')
   @Get(':id')
   findOne(@Param('id') id: number) {
-    return this.marriagesService.findOne(id);
+    try {
+      let resp = this.marriagesService.findOne(id);
+      return createSuccessResponse(resp);
+    } catch (err) {
+      createErrorResponse(err);
+    }
   }
 
   @ApiResponse({
