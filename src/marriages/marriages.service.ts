@@ -45,11 +45,14 @@ export class MarriageService {
     return updatedMarriage;
   }
 
-  async remove(id: number): Promise<void> {
-    const result = await this.marriageRepository.delete(id);
-    if (result.affected === 0) {
-      throw new NotFoundException(`Marriage  with ID ${id} not found`);
+  async remove(id: number) {
+    const marriage = await this.marriageRepository.findOne({ where: { id } });
+
+    if (!marriage) {
+      throw new NotFoundException(`marriage with id ${id} does not exist`);
     }
+
+    return this.marriageRepository.remove(marriage);
   }
 
   async findFilters({

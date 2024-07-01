@@ -37,11 +37,13 @@ export class AuthService {
   async login(user: PayloadToken) {
     const { accessToken } = this.jwtToken(user);
     const refreshToken = this.jwtRefreshToken(user);
+    const userInfo = await this.usersService.findOne(user.id);
     await this.usersService.setCurrentRefreshToken(refreshToken, user.id);
 
     return {
       accessToken,
       refreshToken,
+      userInfo,
     };
   }
 
