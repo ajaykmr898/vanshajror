@@ -83,12 +83,16 @@ export class UsersController {
     return resp;
   }
 
+  @ApiResponse({
+    status: 200,
+    isArray: false,
+    type: UserResponseDto,
+  })
   @ApiBearerAuth('access-token')
   //@Roles(Role.ADMIN)
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    const resp = this.usersService.update(+id, updateUserDto);
-    return resp;
+  update(@Param('id') id: number, @Body() updateUserDto: UpdateUserDto) {
+    return this.usersService.update(id, updateUserDto);
   }
 
   @ApiBearerAuth('access-token')

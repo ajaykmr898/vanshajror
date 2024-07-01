@@ -40,7 +40,7 @@ export class MarriageService {
       where: { id },
     });
     if (!updatedMarriage) {
-      throw new NotFoundException(`Marriage  with ID ${id} not found`);
+      throw new NotFoundException(`Marriage with ID ${id} not found`);
     }
     return updatedMarriage;
   }

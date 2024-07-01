@@ -25,7 +25,7 @@ export class ResponseFormatInterceptor<T>
       map((data) => ({
         status: 'success',
         data: data,
-        message: 'Ok',
+        message: 'ok',
       })),
     );
   }

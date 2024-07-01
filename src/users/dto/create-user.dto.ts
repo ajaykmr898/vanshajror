@@ -1,8 +1,8 @@
-import { ApiProperty, PartialType } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
 import { IsEmail, IsEnum, IsNotEmpty, IsString } from 'class-validator';
 import { Role } from '../../auth/models/roles.model';
 import { DefaultSuccessResponseDto } from '../../utils/dto/response.dto';
-
+import { PartialType, OmitType } from '@nestjs/mapped-types';
 export class CreateUserDto {
   @ApiProperty()
   @IsString()
@@ -31,7 +31,9 @@ export class CreateAdminDto extends CreateUserDto {
   readonly role: Role;
 }
 
-export class UpdateUserDto extends PartialType(CreateUserDto) {}
+export class UpdateUserDto extends OmitType(PartialType(CreateUserDto), [
+  'password',
+]) {}
 
 export class UserFull extends CreateUserDto {
   @ApiProperty()

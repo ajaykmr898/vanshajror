@@ -13,6 +13,7 @@ import {
   UpdateUserDto,
 } from '../dto/create-user.dto';
 import { User } from '../entities/user.entity';
+import { Marriage } from '../../marriages/entities/marriage.entity';
 
 @Injectable()
 export class UsersService {
@@ -75,15 +76,27 @@ export class UsersService {
     });
   }
 
-  async update(id: number, updateUserDto: UpdateUserDto) {
-    const user = await this.userRepository.preload({
-      id,
-      ...updateUserDto,
+  async update(id: number, updateUserDto: UpdateUserDto): Promise<User> {
+    let updateUser = await this.userRepository.findOne({
+      where: { id },
     });
-    if (!user) {
-      throw new NotFoundException(`User with id ${id} does not exist`);
+    if (!updateUser) {
+      throw new NotFoundException(`User with ID ${id} not found`);
     }
-    return this.userRepository.save(user);
+    //if (!updateUser) {
+    updateUser = await this.userRepository.findOne({
+      where: { email: updateUserDto.email },
+    });
+
+    if (updateUser && updateUser?.id !== id) {
+      throw new BadRequestException(
+        `A user with provided email is already present`,
+      );
+    }
+
+    await this.userRepository.update(id, updateUserDto);
+    const updatedUser = await this.userRepository.findOne({ where: { id } });
+    return updatedUser;
   }
 
   async remove(id: number) {
