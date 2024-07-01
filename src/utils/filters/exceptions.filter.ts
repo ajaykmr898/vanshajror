@@ -16,9 +16,10 @@ export class AllExceptionsFilter implements ExceptionFilter {
 
     response.status(status).json({
       status: 'error',
-      code: '500',
+      code: status,
       message: exception.message,
-      path: request.url,
+      //path: request.url,
+      //error: 'An error occurred',
     });
   }
 }

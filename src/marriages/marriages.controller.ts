@@ -34,14 +34,9 @@ export class MarriageController {
   })
   @ApiBearerAuth('access-token')
   @Post()
-  async create(@Body() createMarriageDto: CreateMarriageDto) {
-    try {
-      const resp = await this.marriagesService.create(createMarriageDto);
-      return resp;
-      //return createSuccessResponse(resp);
-    } catch (err) {
-      //return createErrorResponse(err);
-    }
+  create(@Body() createMarriageDto: CreateMarriageDto) {
+    const resp = this.marriagesService.create(createMarriageDto);
+    return resp;
   }
 
   @ApiResponse({
@@ -51,14 +46,9 @@ export class MarriageController {
   })
   @ApiBearerAuth('access-token')
   @Get()
-  async findAll() {
-    try {
-      const resp = await this.marriagesService.findAll();
-      return resp;
-      //return createSuccessResponse(resp);
-    } catch (err) {
-      //return createErrorResponse(err);
-    }
+  findAll() {
+    const resp = this.marriagesService.findAll();
+    return resp;
   }
 
   @ApiResponse({
@@ -69,13 +59,8 @@ export class MarriageController {
   @ApiBearerAuth('access-token')
   @Get(':id')
   findOne(@Param('id') id: number) {
-    try {
-      let resp = this.marriagesService.findOne(id);
-      return resp;
-      //return createSuccessResponse(resp);
-    } catch (err) {
-      //return createErrorResponse(err);
-    }
+    let resp = this.marriagesService.findOne(id);
+    return resp;
   }
 
   @ApiResponse({

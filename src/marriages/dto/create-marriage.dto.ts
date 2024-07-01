@@ -8,7 +8,6 @@ import {
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { DefaultSuccessResponseDto } from '../../utils/dto/response.dto';
-import { UserFull } from '../../users/dto/create-user.dto';
 
 export class CreateMarriageDto {
   @ApiProperty()

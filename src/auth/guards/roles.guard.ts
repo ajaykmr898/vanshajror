@@ -10,8 +10,6 @@ import { Reflector } from '@nestjs/core';
 import { Observable } from 'rxjs';
 import { ROLE_KEY } from '../decorators/roles.decorator';
 import { Role } from '../models/roles.model';
-import { PayloadToken } from '../models/token.model';
-import { createErrorResponse } from '../../utils/dto/response.dto';
 
 @Injectable()
 export class RolesGuard implements CanActivate {
@@ -39,10 +37,7 @@ export class RolesGuard implements CanActivate {
   handleRequest(err, user) {
     if (err || !user) {
       throw new HttpException(
-        createErrorResponse(
-          'This user does not have the required permissions',
-          HttpStatus.UNAUTHORIZED,
-        ),
+        'This user does not have the required permissions',
         HttpStatus.UNAUTHORIZED,
       );
     }

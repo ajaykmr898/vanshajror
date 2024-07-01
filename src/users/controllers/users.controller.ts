@@ -15,10 +15,8 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { Public } from '../../auth/decorators/public.decorator';
-import { Roles } from '../../auth/decorators/roles.decorator';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../../auth/guards/roles.guard';
-import { Role } from '../../auth/models/roles.model';
 import {
   CreateAdminDto,
   CreateUserDto,
@@ -41,14 +39,9 @@ export class UsersController {
   })
   @Public()
   @Post()
-  async create(@Body() createUserDto: CreateUserDto) {
-    try {
-      const resp = await this.usersService.create(createUserDto);
-      return resp;
-      //return createSuccessResponse(resp);
-    } catch (err) {
-      //return createErrorResponse(err);
-    }
+  create(@Body() createUserDto: CreateUserDto) {
+    const resp = this.usersService.create(createUserDto);
+    return resp;
   }
 
   @ApiOperation({ summary: 'create a user with admin role' })
@@ -57,16 +50,11 @@ export class UsersController {
     type: UserResponseDto,
   })
   @ApiBearerAuth('access-token')
-  @Roles(Role.ADMIN)
+  //@Roles(Role.ADMIN)
   @Post('admin')
-  async createAdmin(@Body() creatAdminDto: CreateAdminDto) {
-    try {
-      const resp = await this.usersService.create(creatAdminDto);
-      return resp;
-      //return createSuccessResponse(resp);
-    } catch (err) {
-      //return createErrorResponse(err);
-    }
+  createAdmin(@Body() creatAdminDto: CreateAdminDto) {
+    const resp = this.usersService.create(creatAdminDto);
+    return resp;
   }
 
   @ApiResponse({
@@ -75,58 +63,39 @@ export class UsersController {
     type: UsersListResponseDto,
   })
   @ApiBearerAuth('access-token')
-  @Roles(Role.ADMIN)
+  //@Roles(Role.ADMIN)
   @Get()
-  async findAll() {
-    try {
-      const resp = await this.usersService.findAll();
-      return resp;
-      //return createSuccessResponse(resp);
-    } catch (err) {
-      //return createErrorResponse(err);
-    }
+  findAll() {
+    const resp = this.usersService.findAll();
+    return resp;
   }
 
   @ApiBearerAuth('access-token')
   @ApiResponse({
     status: 200,
+    isArray: false,
     type: UserResponseDto,
   })
-  @Roles(Role.ADMIN)
+  //@Roles(Role.ADMIN)
   @Get(':id')
-  async findOne(@Param('id') id: string) {
-    try {
-      const resp = await this.usersService.findOne(+id);
-      return resp;
-      //return createSuccessResponse(resp);
-    } catch (err) {
-      //return createErrorResponse(err);
-    }
+  findOne(@Param('id') id: string) {
+    let resp = this.usersService.findOne(+id);
+    return resp;
   }
 
   @ApiBearerAuth('access-token')
-  @Roles(Role.ADMIN)
+  //@Roles(Role.ADMIN)
   @Patch(':id')
-  async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    try {
-      const resp = await this.usersService.update(+id, updateUserDto);
-      return resp;
-      //return createSuccessResponse(resp);
-    } catch (err) {
-      //return createErrorResponse(err);
-    }
+  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
+    const resp = this.usersService.update(+id, updateUserDto);
+    return resp;
   }
 
   @ApiBearerAuth('access-token')
-  @Roles(Role.ADMIN)
+  //@Roles(Role.ADMIN)
   @Delete(':id')
-  async remove(@Param('id') id: string) {
-    try {
-      const resp = await this.usersService.remove(+id);
-      return resp;
-      //return createSuccessResponse([]);
-    } catch (err) {
-      //return createErrorResponse(err);
-    }
+  remove(@Param('id') id: string) {
+    const resp = this.usersService.remove(+id);
+    return resp;
   }
 }

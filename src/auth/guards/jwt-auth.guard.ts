@@ -8,7 +8,6 @@ import { Reflector } from '@nestjs/core';
 import { AuthGuard } from '@nestjs/passport';
 import * as jwt from 'jsonwebtoken';
 import { IS_PUBLIC_KEY } from '../decorators/public.decorator';
-import { createErrorResponse } from '../../utils/dto/response.dto';
 
 const HTTP_STATUS_TOKEN_EXPIRED = 498;
 
@@ -28,17 +27,11 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
 
   handleRequest(err, user, info) {
     if (info instanceof jwt.TokenExpiredError) {
-      throw new HttpException(
-        createErrorResponse('Token expired', HTTP_STATUS_TOKEN_EXPIRED),
-        HTTP_STATUS_TOKEN_EXPIRED,
-      );
+      throw new HttpException('Token expired', HTTP_STATUS_TOKEN_EXPIRED);
     }
 
     if (err || !user) {
-      throw new HttpException(
-        createErrorResponse('Unauthorized user', HttpStatus.UNAUTHORIZED),
-        HttpStatus.UNAUTHORIZED,
-      );
+      throw new HttpException('Unauthorized user', HttpStatus.UNAUTHORIZED);
     }
 
     return user;
