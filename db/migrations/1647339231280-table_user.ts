@@ -100,6 +100,34 @@ CREATE TABLE response_choices (
     created_at TIMESTAMP DEFAULT now(),
     updated_at TIMESTAMP DEFAULT now()
 );
+
+SELECT
+      q.question_text,
+      u.last_name AS user_name,
+      STRING_AGG(c.choice_text, ', ') AS answer
+    FROM
+      questions q
+        JOIN responses r ON q.id = r.question_id
+        JOIN response_choices rc ON r.id = rc.response_id
+        JOIN choices c ON rc.choice_id = c.id
+        JOIN users u ON r.user_id = u.id
+    WHERE
+      q.question_type IN ('single_choice', 'multiple_choice')
+    GROUP BY
+      q.id, u.last_name, r.user_id
+
+    UNION ALL
+
+    SELECT
+      q.question_text,
+      u.last_name AS user_name,
+      r.response_text AS answer
+    FROM
+      questions q
+        JOIN responses r ON q.id = r.question_id
+        JOIN users u ON r.user_id = u.id
+    WHERE
+      q.question_type = 'text';
 `;
     await queryRunner.query(query);
   }

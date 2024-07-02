@@ -7,6 +7,7 @@ import config from './config';
 import { enviroments } from './environments';
 import { UsersModule } from './users/users.module';
 import { MarriagesModule } from './marriages/marriages.module';
+import { QuestionsModule } from './questions/questions.module';
 
 @Module({
   imports: [
@@ -43,6 +44,7 @@ import { MarriagesModule } from './marriages/marriages.module';
     UsersModule,
     AuthModule,
     MarriagesModule,
+    QuestionsModule,
   ],
   controllers: [],
   providers: [],
