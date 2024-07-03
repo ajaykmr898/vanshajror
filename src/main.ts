@@ -1,4 +1,4 @@
-import { ValidationPipe } from '@nestjs/common';
+import { Logger, ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
@@ -7,7 +7,9 @@ import { ResponseFormatInterceptor } from './utils/interceptors/response.interce
 import { AllExceptionsFilter } from './utils/filters/exceptions.filter';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {
+    logger: ['log', 'error', 'warn', 'debug', 'verbose'],
+  });
   const configService = app.get(ConfigService);
   app.useGlobalInterceptors(new ResponseFormatInterceptor());
   app.useGlobalFilters(new AllExceptionsFilter());
@@ -55,5 +57,6 @@ async function bootstrap() {
       'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.5/swagger-ui-bundle.js',
   });
   await app.listen(port || 3000);
+  Logger.log('Application is running on: http://localhost:3000');
 }
 bootstrap();

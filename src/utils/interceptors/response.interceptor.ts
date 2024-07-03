@@ -3,9 +3,11 @@ import {
   NestInterceptor,
   ExecutionContext,
   CallHandler,
+  Logger,
 } from '@nestjs/common';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
+import { AllExceptionsFilter } from '../filters/exceptions.filter';
 
 interface Response<T> {
   status: string;
@@ -17,6 +19,8 @@ interface Response<T> {
 export class ResponseFormatInterceptor<T>
   implements NestInterceptor<T, Response<T>>
 {
+  private readonly logger = new Logger(AllExceptionsFilter.name);
+
   intercept(
     context: ExecutionContext,
     next: CallHandler,
@@ -27,6 +31,7 @@ export class ResponseFormatInterceptor<T>
         data: data,
         message: 'ok',
       })),
+      tap((res) => this.logger.log(res)),
     );
   }
 }

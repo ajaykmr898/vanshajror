@@ -8,7 +8,8 @@ import { enviroments } from './environments';
 import { UsersModule } from './users/users.module';
 import { MarriagesModule } from './marriages/marriages.module';
 import { QuestionsModule } from './questions/questions.module';
-
+import { NestModule, MiddlewareConsumer } from '@nestjs/common';
+import { LoggerMiddleware } from './utils/middlewares/logger.middleware';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -49,4 +50,8 @@ import { QuestionsModule } from './questions/questions.module';
   controllers: [],
   providers: [],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(LoggerMiddleware).forRoutes('*');
+  }
+}
