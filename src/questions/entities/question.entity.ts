@@ -6,8 +6,7 @@ import {
   UpdateDateColumn,
   OneToMany,
 } from 'typeorm';
-import { Choice } from './choice.entity';
-import { Response } from './response.entity';
+import { Choice, ChoiceResponse } from './choice.entity';
 
 @Entity('questions')
 export class Question {
@@ -27,8 +26,21 @@ export class Question {
   updated_at: Date;
 
   //@OneToMany(() => Choice, (choice) => choice.question)
-  //choices: Choice[];
+  choices: ChoiceResponse[];
 
   //@OneToMany(() => Response, (response) => response.question)
   //responses: Response[];
+}
+
+export class QuestionResponse {
+  @PrimaryGeneratedColumn()
+  id: number;
+
+  @Column({ type: 'text' })
+  question_text: string;
+
+  @UpdateDateColumn({ type: 'text' })
+  question_type: string;
+
+  choices: ChoiceResponse[];
 }

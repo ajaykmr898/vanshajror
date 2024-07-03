@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiOkResponse, ApiProperty } from '@nestjs/swagger';
 import {
   IsInt,
   IsArray,
@@ -13,12 +13,11 @@ export class CreateQuestionDto {
   @ApiProperty()
   @IsString()
   @IsNotEmpty()
-  readonly question_text: string;
-
+  question_text: string;
   @ApiProperty()
   @IsString()
   @IsNotEmpty()
-  readonly question_type: string;
+  question_type: string;
 }
 
 export class ChoiceDto {
@@ -28,15 +27,16 @@ export class ChoiceDto {
   choice_text: string;
 }
 
-class CreateResponseDto {
+export class CreateResponseDto {
   @IsInt()
   question_id: number;
 
+  @ApiProperty()
   @IsOptional()
   @IsString()
-  @IsOptional()
   response_text: string;
 
+  @ApiProperty()
   @IsArray()
   @IsOptional()
   @IsInt({ each: true })
@@ -52,4 +52,12 @@ export class CreateResponsesDto {
   @ValidateNested({ each: true })
   @Type(() => CreateResponseDto)
   responses: CreateResponseDto[];
+}
+
+export class QuestionsResponses {
+  @ApiProperty()
+  question_text: string;
+
+  @ApiProperty()
+  answer: string;
 }

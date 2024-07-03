@@ -1,10 +1,11 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Question } from './entities/question.entity';
+import { Question, QuestionResponse } from './entities/question.entity';
 import {
   CreateQuestionDto,
   CreateResponsesDto,
+  QuestionsResponses,
 } from './dto/create-question.dto';
 import { UpdateQuestionDto } from './dto/update-question.dto';
 import { Choice } from './entities/choice.entity';
@@ -29,11 +30,10 @@ export class QuestionsService {
     return this.questionsRepository.save(question);
   }
 
-  async findResponsesByUserId(userId: number) {
+  async findResponsesByUserId(userId: number): Promise<QuestionsResponses> {
     const query = `
       SELECT
           q.question_text,
-          u.id AS user_name,
           STRING_AGG(c.choice_text, ', ') AS answer
       FROM
           questions q
@@ -51,7 +51,6 @@ export class QuestionsService {
 
       SELECT
           q.question_text,
-          u.id AS user_name,
           r.response_text AS answer
       FROM
           questions q
@@ -92,14 +91,7 @@ export class QuestionsService {
     }
   }
 
-  async findAll(): Promise<
-    {
-      question_text: string;
-      question_type: string;
-      id: number;
-      choices: { choice_text: string; id: number }[];
-    }[]
-  > {
+  async findAll(): Promise<QuestionResponse[]> {
     const questions = await this.questionsRepository.find();
     const choices = await this.choicesRepository.find();
     //console.log(questions, choices);
@@ -116,7 +108,7 @@ export class QuestionsService {
     }));
   }
 
-  async findOne(id: number) {
+  async findOne(id: number): Promise<QuestionResponse[]> {
     const questions = await this.questionsRepository.findOne({ where: { id } });
     const choices = await this.choicesRepository.find({
       where: { question_id: id },

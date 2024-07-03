@@ -26,3 +26,11 @@ export class Choice {
   @Column()
   question_id: number;
 }
+
+export class ChoiceResponse {
+  @PrimaryGeneratedColumn()
+  id: number;
+
+  @Column({ type: 'text' })
+  choice_text: string;
+}
