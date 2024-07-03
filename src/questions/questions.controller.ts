@@ -8,7 +8,10 @@ import {
   Delete,
 } from '@nestjs/common';
 import { QuestionsService } from './questions.service';
-import { CreateQuestionDto } from './dto/create-question.dto';
+import {
+  CreateResponsesDto,
+  CreateQuestionDto,
+} from './dto/create-question.dto';
 import { UpdateQuestionDto } from './dto/update-question.dto';
 
 @Controller('questions')
@@ -18,6 +21,18 @@ export class QuestionsController {
   @Post()
   create(@Body() createQuestionDto: CreateQuestionDto) {
     return this.questionsService.create(createQuestionDto);
+  }
+
+  @Get('responses/:userId')
+  async getResponsesByUserId(@Param('userId') userId: number) {
+    return await this.questionsService.findResponsesByUserId(userId);
+  }
+
+  @Post('responses')
+  async saveResponses(
+    @Body() createResponsesDto: CreateResponsesDto,
+  ): Promise<void> {
+    await this.questionsService.saveResponses(createResponsesDto);
   }
 
   @Get()

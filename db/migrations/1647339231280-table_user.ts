@@ -103,7 +103,7 @@ CREATE TABLE response_choices (
 
 SELECT
       q.question_text,
-      u.last_name AS user_name,
+      u.id AS user_name,
       STRING_AGG(c.choice_text, ', ') AS answer
     FROM
       questions q
@@ -113,20 +113,25 @@ SELECT
         JOIN users u ON r.user_id = u.id
     WHERE
       q.question_type IN ('single_choice', 'multiple_choice')
+      AND
+      r.user_id = 6
     GROUP BY
-      q.id, u.last_name, r.user_id
+      q.id, u.id, r.user_id
 
     UNION ALL
 
+
     SELECT
       q.question_text,
-      u.last_name AS user_name,
+      u.id AS user_name,
       r.response_text AS answer
     FROM
       questions q
         JOIN responses r ON q.id = r.question_id
         JOIN users u ON r.user_id = u.id
     WHERE
+      r.user_id = 6
+      AND
       q.question_type = 'text';
 `;
     await queryRunner.query(query);

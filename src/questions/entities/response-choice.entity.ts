@@ -14,11 +14,11 @@ export class ResponseChoice {
   @PrimaryGeneratedColumn()
   id: number;
 
-  /*@ManyToOne(() => Response, (response) => response.responseChoices)
-  response: Response;
+  @Column({ type: 'text' })
+  response_id: number;
 
-  @ManyToOne(() => Choice, (choice) => choice.id)
-  choice: Choice;*/
+  @Column({ type: 'text' })
+  choice_id: number;
 
   @CreateDateColumn({ type: 'date' })
   created_at: Date;

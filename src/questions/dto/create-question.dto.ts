@@ -1,6 +1,14 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsString } from 'class-validator';
-
+import {
+  IsInt,
+  IsArray,
+  IsOptional,
+  IsNotEmpty,
+  IsString,
+  ArrayNotEmpty,
+  ValidateNested,
+} from 'class-validator';
+import { Type } from 'class-transformer';
 export class CreateQuestionDto {
   @ApiProperty()
   @IsString()
@@ -18,4 +26,30 @@ export class ChoiceDto {
   @IsString()
   @IsNotEmpty()
   choice_text: string;
+}
+
+class CreateResponseDto {
+  @IsInt()
+  question_id: number;
+
+  @IsOptional()
+  @IsString()
+  @IsOptional()
+  response_text: string;
+
+  @IsArray()
+  @IsOptional()
+  @IsInt({ each: true })
+  choice_ids: number[];
+}
+
+export class CreateResponsesDto {
+  @IsInt()
+  user_id: number;
+
+  @IsArray()
+  @ArrayNotEmpty()
+  @ValidateNested({ each: true })
+  @Type(() => CreateResponseDto)
+  responses: CreateResponseDto[];
 }
