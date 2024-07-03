@@ -1,10 +1,12 @@
 import * as bcrypt from 'bcrypt';
-import { BeforeInsert, Column, Entity } from 'typeorm';
+import { BeforeInsert, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import { Role } from '../../auth/models/roles.model';
-import { DefaultEntity } from '../../utils/entities/default.entity';
 
 @Entity('users')
-export class User extends DefaultEntity {
+export class User {
+  @PrimaryGeneratedColumn()
+  id: number;
+
   @Column({ unique: true })
   email: string;
 
@@ -14,15 +16,53 @@ export class User extends DefaultEntity {
   @Column({ select: false, nullable: true, name: 'refresh_token' })
   refreshToken: string;
 
-  @Column({
-    name: 'first_name',
-  })
+  @Column({ name: 'first_name', length: 255 })
   firstName: string;
 
-  @Column({
-    name: 'last_name',
-  })
+  @Column({ name: 'last_name', length: 255 })
   lastName: string;
+
+  @Column({ nullable: true })
+  dob: string;
+
+  @Column({ select: false, nullable: true })
+  regcode: string;
+
+  @Column({ select: false, nullable: true })
+  reqcodeexptime: string;
+
+  @Column({ select: false, nullable: true })
+  reglink: string;
+
+  @Column({ select: false, nullable: true })
+  reglinkexptime: string;
+
+  @Column({ select: false, default: false })
+  issignedup: boolean;
+
+  @Column({ select: false, nullable: true })
+  resetpasslink: string;
+
+  @Column({ select: false, nullable: true })
+  resetpasslinkexptime: string;
+
+  @Column({ type: 'jsonb', nullable: true })
+  pob: object;
+
+  @Column({ type: 'jsonb', nullable: true })
+  por: object;
+
+  @Column({ nullable: true })
+  level: string;
+
+  @Column({ nullable: true })
+  gender: string;
+
+  @Column({ nullable: true })
+  phone: string;
+
+  @Column({ select: false, default: false })
+  deleted: boolean;
 
   @Column({
     type: 'enum',

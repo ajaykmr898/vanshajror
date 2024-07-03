@@ -102,4 +102,18 @@ export class UsersController {
     const resp = this.usersService.remove(+id);
     return resp;
   }
+
+  @Public()
+  @Post('confirm-otp')
+  async confirmOtp(@Body('email') email: string, @Body('otp') otp: string) {
+    return this.usersService.confirmOtp(email, otp);
+  }
+  @Public()
+  @Post('confirm-email')
+  async confirmEmail(
+    @Body('email') email: string,
+    @Body('token') token: string,
+  ) {
+    return this.usersService.confirmEmail(email, token);
+  }
 }

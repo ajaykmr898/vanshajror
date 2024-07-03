@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Injectable,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
@@ -13,7 +14,8 @@ import {
   UpdateUserDto,
 } from '../dto/create-user.dto';
 import { User } from '../entities/user.entity';
-import { Marriage } from '../../marriages/entities/marriage.entity';
+import { v4 as uuidv4 } from 'uuid';
+import * as moment from 'moment';
 
 @Injectable()
 export class UsersService {
@@ -33,7 +35,14 @@ export class UsersService {
       );
     }
 
-    const createdUser = await this.userRepository.create(createUserDto);
+    const createdUser = this.userRepository.create(createUserDto);
+    createdUser.regcode = Math.floor(
+      100000 + Math.random() * 900000,
+    ).toString();
+    createdUser.reqcodeexptime = moment().add(10, 'minutes').toISOString();
+    createdUser.reglink = uuidv4();
+    createdUser.reglinkexptime = moment().add(24, 'hours').toISOString();
+    createdUser.issignedup = false;
     const saveUser = await this.userRepository.save(createdUser);
     delete saveUser.password;
     delete saveUser.refreshToken;
@@ -145,5 +154,33 @@ export class UsersService {
     if (isRefreshTokenMatching) {
       return { id: user.id, role: user.role };
     }
+  }
+
+  async confirmOtp(email: string, otp: string): Promise<User> {
+    const user = await this.userRepository.findOne({
+      where: { email, regcode: otp },
+    });
+    if (user && moment().isBefore(user.reqcodeexptime)) {
+      user.issignedup = true;
+      user.regcode = null;
+      user.reqcodeexptime = null;
+      return this.userRepository.save(user);
+    }
+    throw new UnauthorizedException('Invalid or expired OTP');
+  }
+
+  async confirmEmail(email: string, token: string): Promise<User> {
+    const user = await this.userRepository.findOne({
+      where: { email, reglink: token },
+    });
+    if (user && moment().isBefore(user.reglinkexptime)) {
+      user.issignedup = true;
+      user.reglink = null;
+      user.reglinkexptime = null;
+      return this.userRepository.save(user);
+    }
+    throw new UnauthorizedException(
+      'Invalid or expired email confirmation link',
+    );
   }
 }

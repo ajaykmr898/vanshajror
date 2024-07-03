@@ -19,6 +19,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
 
   canActivate(context: ExecutionContext) {
     const isPublic = this.reflector.get(IS_PUBLIC_KEY, context.getHandler());
+    console.log(isPublic);
     if (isPublic) {
       return true;
     }
@@ -26,6 +27,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
   }
 
   handleRequest(err, user, info) {
+    //console.log(err, user, info);
     if (info instanceof jwt.TokenExpiredError) {
       throw new HttpException('Token expired', HTTP_STATUS_TOKEN_EXPIRED);
     }
