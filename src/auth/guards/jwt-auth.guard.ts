@@ -19,7 +19,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
 
   canActivate(context: ExecutionContext) {
     const isPublic = this.reflector.get(IS_PUBLIC_KEY, context.getHandler());
-    console.log(isPublic);
+    //console.log(isPublic);
     if (isPublic) {
       return true;
     }
