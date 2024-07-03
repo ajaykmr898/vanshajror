@@ -12,7 +12,7 @@ interface Response<T> {
   status: string;
   data: T;
   message: string;
-  statusCode: number; // Include statusCode in the Response interface
+  statusCode: number;
 }
 
 @Injectable()
@@ -34,7 +34,10 @@ export class ResponseFormatInterceptor<T>
         message: 'ok',
         data: data,
       })),
-      tap((res) => this.logger.log(res)),
+      tap((res) => {
+        this.logger.log(request.body);
+        this.logger.log(res);
+      }),
     );
   }
 }

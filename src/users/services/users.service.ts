@@ -102,7 +102,9 @@ export class UsersService {
         `A user with provided email is already present`,
       );
     }
-
+    if (updateUserDto.password) {
+      updateUserDto.password = await bcrypt.hash(updateUserDto.password, 10);
+    }
     await this.userRepository.update(id, updateUserDto);
     const updatedUser = await this.userRepository.findOne({ where: { id } });
     return updatedUser;
