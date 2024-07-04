@@ -2,6 +2,7 @@ import { Injectable, HttpService, Inject } from '@nestjs/common';
 import { ConfigType } from '@nestjs/config';
 import config from '../config';
 import { stringify } from 'ts-jest';
+import { CompareAnswersDto } from './dto/payload.dto';
 
 @Injectable()
 export class OpenAiService {
@@ -17,7 +18,7 @@ export class OpenAiService {
     this.apiUrl = this.configService.openai.apiUrl;
   }
 
-  async compareAnswers(answers: string[]): Promise<any> {
+  async compareAnswers(answers: CompareAnswersDto[]): Promise<any> {
     let prompt = `Compare the following answers and provide feedback on the differences and similarities and give me their compatibility in percentage:`;
     prompt += `\n\n${stringify(answers)}`;
 
