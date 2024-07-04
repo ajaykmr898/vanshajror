@@ -10,6 +10,8 @@ import { MarriagesModule } from './marriages/marriages.module';
 import { QuestionsModule } from './questions/questions.module';
 import { NestModule, MiddlewareConsumer } from '@nestjs/common';
 import { LoggerMiddleware } from './utils/middlewares/logger.middleware';
+import { OpenAiModule } from './openai/openai.module';
+import { OffersModule } from './offers/offers.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -46,6 +48,8 @@ import { LoggerMiddleware } from './utils/middlewares/logger.middleware';
     AuthModule,
     MarriagesModule,
     QuestionsModule,
+    OpenAiModule,
+    OffersModule,
   ],
   controllers: [],
   providers: [],

@@ -1,4 +1,5 @@
 import { registerAs } from '@nestjs/config';
+import * as process from 'node:process';
 
 export default registerAs('config', () => {
   return {
@@ -17,6 +18,10 @@ export default registerAs('config', () => {
       jwtRefreshSecret: process.env.JWT_REFRESH_SECRET,
       refreshTokenExpiration: process.env.REFRESH_TOKEN_EXPIRATION,
       accessTokenExpiration: process.env.ACCESS_TOKEN_EXPIRATION,
+    },
+    openai: {
+      apiKey: process.env.OPENAI_API_KEY,
+      apiUrl: process.env.OPENAI_URL,
     },
   };
 });
