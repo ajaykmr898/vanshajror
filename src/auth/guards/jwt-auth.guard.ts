@@ -27,13 +27,19 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
   }
 
   handleRequest(err, user, info) {
-    //console.log(err, user, info);
     if (info instanceof jwt.TokenExpiredError) {
       throw new HttpException('Token expired', HTTP_STATUS_TOKEN_EXPIRED);
     }
 
     if (err || !user) {
       throw new HttpException('Unauthorized user', HttpStatus.UNAUTHORIZED);
+    }
+
+    if (user && user?.issignedup !== '1') {
+      throw new HttpException(
+        'User not activated yet',
+        HttpStatus.UNAUTHORIZED,
+      );
     }
 
     return user;

@@ -42,7 +42,7 @@ export class UsersService {
     createdUser.reqcodeexptime = moment().add(10, 'minutes').toISOString();
     createdUser.reglink = uuidv4();
     createdUser.reglinkexptime = moment().add(24, 'hours').toISOString();
-    createdUser.issignedup = false;
+    createdUser.issignedup = '0';
     const saveUser = await this.userRepository.save(createdUser);
     delete saveUser.password;
     delete saveUser.refreshToken;
@@ -55,7 +55,7 @@ export class UsersService {
 
   async findByEmailAndGetPassword(email: string) {
     return await this.userRepository.findOne({
-      select: ['id', 'password', 'role'],
+      select: ['id', 'password', 'role', 'issignedup'],
       where: { email },
     });
   }
@@ -163,7 +163,7 @@ export class UsersService {
       where: { email, regcode: otp },
     });
     if (user && moment().isBefore(user.reqcodeexptime)) {
-      user.issignedup = true;
+      user.issignedup = '1';
       user.regcode = null;
       user.reqcodeexptime = null;
       return this.userRepository.save(user);
@@ -176,7 +176,7 @@ export class UsersService {
       where: { email, reglink: token },
     });
     if (user && moment().isBefore(user.reglinkexptime)) {
-      user.issignedup = true;
+      user.issignedup = '1';
       user.reglink = null;
       user.reglinkexptime = null;
       return this.userRepository.save(user);

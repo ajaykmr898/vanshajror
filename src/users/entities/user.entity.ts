@@ -37,8 +37,8 @@ export class User {
   @Column({ select: false, nullable: true })
   reglinkexptime: string;
 
-  @Column({ select: false, default: false })
-  issignedup: boolean;
+  @Column({ select: false, default: 0 })
+  issignedup: string;
 
   @Column({ select: false, nullable: true })
   resetpasslink: string;

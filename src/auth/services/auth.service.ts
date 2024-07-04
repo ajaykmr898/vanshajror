@@ -20,14 +20,14 @@ export class AuthService {
       password: string;
       id: number;
       role: string;
+      issignedup: string;
     } = await this.usersService.findByEmailAndGetPassword(email);
 
     if (user) {
       const isMatch = await bcrypt.compare(password, user.password);
-
       if (isMatch) {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { password, ...rta } = user;
+
         return rta;
       }
     }
@@ -48,7 +48,11 @@ export class AuthService {
   }
 
   jwtToken(user: PayloadToken) {
-    const payload: PayloadToken = { role: user.role, id: user.id };
+    const payload: PayloadToken = {
+      role: user.role,
+      id: user.id,
+      issignedup: user.issignedup,
+    };
     return {
       accessToken: this.jwtService.sign(payload),
     };
