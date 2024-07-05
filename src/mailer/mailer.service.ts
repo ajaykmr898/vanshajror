@@ -9,11 +9,11 @@ export class MailService {
   async sendUserConfirmation(email: string, otp: string, firstName: string) {
     await this.mailerService.sendMail({
       to: email,
-      subject: 'vanshajRor OTP Code',
+      subject: 'Ror OTP Code',
       template: './otp',
       context: {
         otp,
-        softwareName: 'vanshajRor',
+        softwareName: 'Ror',
         firstName,
       },
     });
