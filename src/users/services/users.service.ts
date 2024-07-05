@@ -212,9 +212,9 @@ export class UsersService {
     user.reqcodeexptime = moment().add(10, 'minutes').toISOString();
 
     try {
-      await this.mailService.sendUserConfirmation(email, user.regcode);
+      //await this.mailService.sendUserConfirmation(email, user.regcode);
     } catch (err) {
-      throw new BadRequestException('Unable to send OTP email' + email);
+      throw new BadRequestException('Unable to send OTP email');
     }
 
     await this.userRepository.save(user);
