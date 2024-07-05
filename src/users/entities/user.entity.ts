@@ -28,22 +28,22 @@ export class User {
   @Column({ select: false, nullable: true })
   regcode: string;
 
-  @Column({ select: false, nullable: true })
+  @Column({ nullable: true })
   reqcodeexptime: string;
 
   @Column({ select: false, nullable: true })
   reglink: string;
 
-  @Column({ select: false, nullable: true })
+  @Column({ nullable: true })
   reglinkexptime: string;
 
-  @Column({ select: false, default: 0 })
+  @Column({ default: 0 })
   issignedup: string;
 
-  @Column({ select: false, nullable: true })
+  @Column({ nullable: true })
   resetpasslink: string;
 
-  @Column({ select: false, nullable: true })
+  @Column({ nullable: true })
   resetpasslinkexptime: string;
 
   @Column({ type: 'jsonb', nullable: true })

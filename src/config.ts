@@ -23,5 +23,12 @@ export default registerAs('config', () => {
       apiKey: process.env.OPENAI_API_KEY,
       apiUrl: process.env.OPENAI_URL,
     },
+    mail: {
+      key: process.env.GOOGLE_API,
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_PASS,
+      agent: process.env.EMAIL_AGENT,
+      port: process.env.EMAIL_PORT,
+    },
   };
 });

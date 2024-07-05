@@ -120,9 +120,6 @@ export class UsersController {
   @Public()
   @Post('resend-otp')
   async resendOtp(@Body('email') email: string) {
-    await this.usersService.resendOtp(email);
-    return {
-      message: 'OTP has been resent successfully',
-    };
+    return await this.usersService.resendOtp(email);
   }
 }

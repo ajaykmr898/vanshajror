@@ -46,7 +46,7 @@ export class UsersService {
     createdUser.issignedup = '0';
 
     try {
-      //await this.mailService.sendUserConfirmation(createdUser.email, otp);
+      await this.mailService.sendUserConfirmation(createdUser.email, otp);
     } catch (err) {
       throw new BadRequestException('Unable to send OTP email');
     }
@@ -200,19 +200,19 @@ export class UsersService {
       throw new NotFoundException(`User with email ${email} does not exist`);
     }
 
-    if (
+    /*if (
       moment().isBefore(moment(user.reqcodeexptime).subtract(50, 'seconds'))
     ) {
       throw new BadRequestException(
         'You can request a new OTP after 60 seconds',
       );
-    }
+    }*/
 
     user.regcode = Math.floor(100000 + Math.random() * 900000).toString();
     user.reqcodeexptime = moment().add(10, 'minutes').toISOString();
 
     try {
-      //await this.mailService.sendUserConfirmation(email, user.regcode);
+      await this.mailService.sendUserConfirmation(email, user.regcode);
     } catch (err) {
       throw new BadRequestException('Unable to send OTP email');
     }
