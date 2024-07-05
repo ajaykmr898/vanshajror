@@ -4,7 +4,7 @@
 # watch mode
 $ npm run start:dev
 
-address check for m and o
+address check for m and o and [swagger]
 relations
 gotras
 villages info and history

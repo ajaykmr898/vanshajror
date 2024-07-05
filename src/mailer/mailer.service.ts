@@ -6,13 +6,15 @@ import axios from 'axios';
 export class MailService {
   constructor(private readonly mailerService: MailerService) {}
 
-  async sendUserConfirmation(email: string, otp: string) {
+  async sendUserConfirmation(email: string, otp: string, firstName: string) {
     await this.mailerService.sendMail({
       to: email,
-      subject: 'Your OTP Code',
+      subject: 'vanshajRor OTP Code',
       template: './otp',
       context: {
         otp,
+        softwareName: 'vanshajRor',
+        firstName,
       },
     });
   }

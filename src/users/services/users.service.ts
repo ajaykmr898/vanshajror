@@ -15,7 +15,7 @@ import {
 } from '../dto/create-user.dto';
 import { User } from '../entities/user.entity';
 import { v4 as uuidv4 } from 'uuid';
-import moment from 'moment';
+import * as moment from 'moment';
 import { MailService } from '../../mailer/mailer.service';
 
 @Injectable()
@@ -46,7 +46,11 @@ export class UsersService {
     createdUser.issignedup = '0';
 
     try {
-      await this.mailService.sendUserConfirmation(createdUser.email, otp);
+      await this.mailService.sendUserConfirmation(
+        createdUser.email,
+        otp,
+        createdUser.firstName,
+      );
     } catch (err) {
       throw new BadRequestException('Unable to send OTP email');
     }
@@ -212,7 +216,11 @@ export class UsersService {
     user.reqcodeexptime = moment().add(10, 'minutes').toISOString();
 
     try {
-      await this.mailService.sendUserConfirmation(email, user.regcode);
+      await this.mailService.sendUserConfirmation(
+        email,
+        user.regcode,
+        user.firstName,
+      );
     } catch (err) {
       throw new BadRequestException('Unable to send OTP email');
     }

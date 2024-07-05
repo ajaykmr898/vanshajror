@@ -15,6 +15,7 @@ export class MailerController {
     const response = await this.mailerService.sendUserConfirmation(
       compareAnswersDto,
       compareAnswersDto,
+      compareAnswersDto,
     );
     return response;
   }
