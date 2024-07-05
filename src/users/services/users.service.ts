@@ -16,7 +16,6 @@ import {
 import { User } from '../entities/user.entity';
 import { v4 as uuidv4 } from 'uuid';
 import moment from 'moment';
-import * as moment from 'moment';
 import { MailService } from '../../mailer/mailer.service';
 
 @Injectable()
