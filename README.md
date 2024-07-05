@@ -12,4 +12,5 @@ agriculture info
 giving cash back programs
 insights
 user active email link otp - ~
-otp again
+email otp again
+phone

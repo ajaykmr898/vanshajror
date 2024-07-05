@@ -116,4 +116,13 @@ export class UsersController {
   ) {
     return this.usersService.confirmEmail(email, token);
   }
+
+  @Public()
+  @Post('resend-otp')
+  async resendOtp(@Body('email') email: string) {
+    await this.usersService.resendOtp(email);
+    return {
+      message: 'OTP has been resent successfully',
+    };
+  }
 }

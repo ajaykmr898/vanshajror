@@ -192,4 +192,31 @@ export class UsersService {
       'Invalid or expired email confirmation link',
     );
   }
+
+  async resendOtp(email: string): Promise<void> {
+    const user = await this.userRepository.findOne({ where: { email } });
+
+    if (!user) {
+      throw new NotFoundException(`User with email ${email} does not exist`);
+    }
+
+    if (
+      moment().isBefore(moment(user.reqcodeexptime).subtract(50, 'seconds'))
+    ) {
+      throw new BadRequestException(
+        'You can request a new OTP after 60 seconds',
+      );
+    }
+
+    user.regcode = Math.floor(100000 + Math.random() * 900000).toString();
+    user.reqcodeexptime = moment().add(10, 'minutes').toISOString();
+
+    try {
+      await this.mailService.sendUserConfirmation(email, user.regcode);
+    } catch (err) {
+      throw new BadRequestException('Unable to send OTP email' + email);
+    }
+
+    await this.userRepository.save(user);
+  }
 }
