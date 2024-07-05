@@ -11,4 +11,5 @@ villages info and history
 agriculture info
 giving cash back programs
 insights
-user active
+user active email link otp - ~
+otp again

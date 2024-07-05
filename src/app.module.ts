@@ -12,6 +12,7 @@ import { NestModule, MiddlewareConsumer } from '@nestjs/common';
 import { LoggerMiddleware } from './utils/middlewares/logger.middleware';
 import { OpenAiModule } from './openai/openai.module';
 import { OffersModule } from './offers/offers.module';
+import { MailerConfigModule } from './mailer/mailer.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -50,6 +51,7 @@ import { OffersModule } from './offers/offers.module';
     QuestionsModule,
     OpenAiModule,
     OffersModule,
+    MailerConfigModule,
   ],
   controllers: [],
   providers: [],

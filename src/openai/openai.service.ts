@@ -1,8 +1,9 @@
-import { Injectable, HttpService, Inject } from '@nestjs/common';
+import { Injectable, Inject } from '@nestjs/common';
 import { ConfigType } from '@nestjs/config';
 import config from '../config';
 import { stringify } from 'ts-jest';
 import { CompareAnswersDto } from './dto/payload.dto';
+import { HttpService } from '@nestjs/axios';
 
 @Injectable()
 export class OpenAiService {

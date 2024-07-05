@@ -16,12 +16,14 @@ import {
 import { User } from '../entities/user.entity';
 import { v4 as uuidv4 } from 'uuid';
 import * as moment from 'moment';
+import { MailService } from '../../mailer/mailer.service';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User)
     private userRepository: Repository<User>,
+    private readonly mailService: MailService,
   ) {}
 
   async create(createUserDto: CreateUserDto | CreateAdminDto) {
@@ -36,13 +38,18 @@ export class UsersService {
     }
 
     const createdUser = this.userRepository.create(createUserDto);
-    createdUser.regcode = Math.floor(
-      100000 + Math.random() * 900000,
-    ).toString();
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    createdUser.regcode = otp;
     createdUser.reqcodeexptime = moment().add(10, 'minutes').toISOString();
     createdUser.reglink = uuidv4();
     createdUser.reglinkexptime = moment().add(24, 'hours').toISOString();
     createdUser.issignedup = '0';
+
+    try {
+      //await this.mailService.sendUserConfirmation(createdUser.email, otp);
+    } catch (err) {
+      throw new BadRequestException('Unable to send OTP email');
+    }
     const saveUser = await this.userRepository.save(createdUser);
     delete saveUser.password;
     delete saveUser.refreshToken;
