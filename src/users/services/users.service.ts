@@ -15,7 +15,7 @@ import {
 } from '../dto/create-user.dto';
 import { User } from '../entities/user.entity';
 import { v4 as uuidv4 } from 'uuid';
-import moment from 'moment';
+import * as dayjs from 'dayjs';
 import { MailService } from '../../mailer/mailer.service';
 
 @Injectable()
@@ -36,13 +36,12 @@ export class UsersService {
         'User with provided email is already present',
       );
     }
-
     const createdUser = this.userRepository.create(createUserDto);
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
     createdUser.regcode = otp;
-    createdUser.reqcodeexptime = moment().add(10, 'minutes').toISOString();
+    createdUser.reqcodeexptime = dayjs().add(10, 'minutes').toISOString();
     createdUser.reglink = uuidv4();
-    createdUser.reglinkexptime = moment().add(24, 'hours').toISOString();
+    createdUser.reglinkexptime = dayjs().add(24, 'hours').toISOString();
     createdUser.issignedup = '0';
 
     try {
@@ -173,7 +172,7 @@ export class UsersService {
     const user = await this.userRepository.findOne({
       where: { email, regcode: otp },
     });
-    if (user && moment().isBefore(user.reqcodeexptime)) {
+    if (user && dayjs().isBefore(user.reqcodeexptime)) {
       user.issignedup = '1';
       user.regcode = null;
       user.reqcodeexptime = null;
@@ -186,7 +185,7 @@ export class UsersService {
     const user = await this.userRepository.findOne({
       where: { email, reglink: token },
     });
-    if (user && moment().isBefore(user.reglinkexptime)) {
+    if (user && dayjs().isBefore(user.reglinkexptime)) {
       user.issignedup = '1';
       user.reglink = null;
       user.reglinkexptime = null;
@@ -205,7 +204,7 @@ export class UsersService {
     }
 
     /*if (
-      moment().isBefore(moment(user.reqcodeexptime).subtract(50, 'seconds'))
+      dayjs().isBefore(dayjs(user.reqcodeexptime).subtract(50, 'seconds'))
     ) {
       throw new BadRequestException(
         'You can request a new OTP after 60 seconds',
@@ -213,7 +212,7 @@ export class UsersService {
     }*/
 
     user.regcode = Math.floor(100000 + Math.random() * 900000).toString();
-    user.reqcodeexptime = moment().add(10, 'minutes').toISOString();
+    user.reqcodeexptime = dayjs().add(10, 'minutes').toISOString();
 
     try {
       await this.mailService.sendUserConfirmation(

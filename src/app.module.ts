@@ -13,6 +13,8 @@ import { LoggerMiddleware } from './utils/middlewares/logger.middleware';
 import { OpenAiModule } from './openai/openai.module';
 import { OffersModule } from './offers/offers.module';
 import { MailerConfigModule } from './mailer/mailer.module';
+import * as fs from 'fs';
+import * as path from 'path';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -26,7 +28,7 @@ import { MailerConfigModule } from './mailer/mailer.module';
         REFRESH_TOKEN_EXPIRATION: Joi.string().required(),
       }),
       validationOptions: {
-        abortEarly: true, //when true, stops validation on the first error, otherwise returns all the errors found. Defaults to true.
+        abortEarly: true,
       },
     }),
     TypeOrmModule.forRootAsync({
@@ -41,7 +43,12 @@ import { MailerConfigModule } from './mailer/mailer.module';
           password: configService.postgres.password,
           autoLoadEntities: true,
           keepConnectionAlive: true,
-          ssl: true,
+          synchronize: true,
+          ssl: {
+            ca: fs
+              .readFileSync(path.join(__dirname, 'certs/prod-ca.crt'))
+              .toString(),
+          },
         };
       },
     }),

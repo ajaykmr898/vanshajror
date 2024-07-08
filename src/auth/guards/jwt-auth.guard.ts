@@ -34,7 +34,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
     if (err || !user) {
       throw new HttpException('Unauthorized user', HttpStatus.UNAUTHORIZED);
     }
-
+    console.log(user);
     if (user && user?.issignedup !== '1') {
       throw new HttpException(
         'User not activated yet',
