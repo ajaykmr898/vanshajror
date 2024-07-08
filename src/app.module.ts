@@ -13,8 +13,6 @@ import { LoggerMiddleware } from './utils/middlewares/logger.middleware';
 import { OpenAiModule } from './openai/openai.module';
 import { OffersModule } from './offers/offers.module';
 import { MailerConfigModule } from './mailer/mailer.module';
-import * as fs from 'fs';
-import * as path from 'path';
 @Module({
   imports: [
     ConfigModule.forRoot({
