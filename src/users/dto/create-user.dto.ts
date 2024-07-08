@@ -5,44 +5,14 @@ import {
   IsNotEmpty,
   IsOptional,
   IsString,
+  ValidateNested,
 } from 'class-validator';
 import { Role } from '../../auth/models/roles.model';
 import { DefaultSuccessResponseDto } from '../../utils/dto/response.dto';
+import { Type } from 'class-transformer';
+import { CreatePersonalDetailsDto } from './details.dto';
+import { CreateEducationDto } from './education.dto';
 export class CreateUserDto {
-  @ApiProperty()
-  @IsString()
-  @IsEmail()
-  readonly email: string;
-
-  @ApiProperty()
-  @IsString()
-  @IsNotEmpty()
-  readonly password: string;
-
-  @ApiProperty()
-  @IsString()
-  @IsNotEmpty()
-  readonly firstName: string;
-
-  @ApiProperty()
-  @IsString()
-  @IsNotEmpty()
-  readonly lastName: string;
-}
-
-export class CreateAdminDto extends CreateUserDto {
-  @ApiProperty()
-  @IsEnum(Role)
-  readonly role: Role;
-}
-
-/*
-export class UpdateUserDto extends OmitType(PartialType(CreateUserDto), [
-  'password',
-]) {}
-*/
-
-export class UpdateUserDto {
   @ApiProperty()
   @IsString()
   @IsEmail()
@@ -62,7 +32,31 @@ export class UpdateUserDto {
   @IsString()
   @IsNotEmpty()
   readonly lastName: string;
+
+  @ValidateNested()
+  @Type(() => CreatePersonalDetailsDto)
+  @IsOptional()
+  personalDetails: CreatePersonalDetailsDto;
+
+  @ValidateNested()
+  @Type(() => CreateEducationDto)
+  @IsOptional()
+  education: CreateEducationDto;
 }
+
+export class CreateAdminDto extends CreateUserDto {
+  @ApiProperty()
+  @IsEnum(Role)
+  readonly role: Role;
+}
+
+/*
+export class UpdateUserDto extends OmitType(PartialType(CreateUserDto), [
+  'password',
+]) {}
+*/
+
+export class UpdateUserDto extends CreateUserDto {}
 
 export class UserFull extends CreateUserDto {
   @ApiProperty()

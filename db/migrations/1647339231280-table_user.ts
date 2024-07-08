@@ -40,7 +40,8 @@ export class tableUser1647339231280 implements MigrationInterface {
                                     complexion VARCHAR(50),
                                     marital_status VARCHAR(20),
                                     pob jsonb,
-                                    por jsonb
+                                    por jsonb,
+                                    nationality VARCHAR(20)
     );
 
     CREATE TABLE education (

@@ -1,6 +1,15 @@
 import * as bcrypt from 'bcrypt';
-import { BeforeInsert, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  BeforeInsert,
+  Column,
+  Entity,
+  JoinColumn,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { Role } from '../../auth/models/roles.model';
+import { PersonalDetails } from './details.entity';
+import { Education } from './education.entity';
 
 @Entity('users')
 export class User {
@@ -70,6 +79,14 @@ export class User {
     default: Role.ADMIN,
   })
   role: Role;
+
+  //@OneToOne(() => PersonalDetails, { cascade: true })
+  //@JoinColumn()
+  personalDetails: PersonalDetails;
+
+  //@OneToOne(() => Education, { cascade: true })
+  //@JoinColumn()
+  education: Education;
 
   @BeforeInsert()
   async hashPassword() {

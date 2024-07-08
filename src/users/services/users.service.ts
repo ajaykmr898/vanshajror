@@ -25,6 +25,8 @@ import {
   subSeconds,
 } from 'date-fns';
 import { MailService } from '../../mailer/mailer.service';
+import { PersonalDetails } from '../entities/details.entity';
+import { Education } from '../entities/education.entity';
 
 @Injectable()
 export class UsersService {
@@ -32,6 +34,10 @@ export class UsersService {
     @InjectRepository(User)
     private userRepository: Repository<User>,
     private readonly mailService: MailService,
+    @InjectRepository(PersonalDetails)
+    private readonly personalDetailsRepository: Repository<PersonalDetails>,
+    @InjectRepository(Education)
+    private readonly educationRepository: Repository<Education>,
   ) {}
 
   async create(createUserDto: CreateUserDto | CreateAdminDto) {
@@ -44,7 +50,8 @@ export class UsersService {
         'User with provided email is already present',
       );
     }
-    const createdUser = this.userRepository.create(createUserDto);
+    const { personalDetails, education, ...userDetails } = createUserDto;
+    const createdUser = this.userRepository.create(userDetails);
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
     createdUser.regcode = otp;
     createdUser.issignedup = '0';
@@ -68,13 +75,52 @@ export class UsersService {
       throw new BadRequestException('Unable to send OTP email');
     }
     const saveUser = await this.userRepository.save(createdUser);
+
+    if (personalDetails) {
+      const createdPersonalDetails =
+        this.personalDetailsRepository.create(personalDetails);
+      createdPersonalDetails.user_id = saveUser.id;
+      const savedPersonalDetails = await this.personalDetailsRepository.save(
+        createdPersonalDetails,
+      );
+      createdUser.personalDetails = savedPersonalDetails[0];
+    }
+
+    if (education) {
+      const createdEducations = this.educationRepository.create(education);
+      createdEducations.user_id = saveUser.id;
+      const savedEducations = await this.educationRepository.save(
+        createdEducations,
+      );
+      createdUser.education = savedEducations[0];
+    }
     delete saveUser.password;
     delete saveUser.refreshToken;
     return saveUser;
   }
 
   async findAll() {
-    return this.userRepository.find();
+    const users = await this.userRepository.find();
+    let resp = users.map((user) => {
+      let personalDetails = this.getPersonalDetails(user.id);
+      let education = this.getEducation(user.id);
+      return { ...user, personalDetails, education };
+    });
+    return resp;
+  }
+
+  async getPersonalDetails(userId) {
+    const personalDetails = await this.personalDetailsRepository.findOne({
+      where: { user_id: userId },
+    });
+    return personalDetails;
+  }
+
+  async getEducation(userId) {
+    const education = await this.educationRepository.findOne({
+      where: { user_id: userId },
+    });
+    return education;
   }
 
   async findByEmailAndGetPassword(email: string) {
@@ -87,6 +133,8 @@ export class UsersService {
   async findOne(id: number) {
     //return await this.userRepository.findOne({ where: { id } });
     const user = await this.userRepository.findOne({ where: { id } });
+    user.personalDetails = await this.getPersonalDetails(id);
+    user.education = await this.getEducation(id);
     if (!user) {
       throw new NotFoundException(`User with id ${id} does not exist`);
     }
@@ -129,7 +177,41 @@ export class UsersService {
     if (updateUserDto.password) {
       updateUserDto.password = await bcrypt.hash(updateUserDto.password, 10);
     }
-    await this.userRepository.update(id, updateUserDto);
+
+    const { personalDetails, education, ...userDetails } = updateUserDto;
+
+    await this.userRepository.update(id, userDetails);
+
+    let existingPersonalDetails: any =
+      await this.personalDetailsRepository.findOne({
+        where: { user_id: id },
+      });
+    if (personalDetails) {
+      if (!existingPersonalDetails) {
+        existingPersonalDetails =
+          this.personalDetailsRepository.create(personalDetails);
+      } else {
+        Object.assign(existingPersonalDetails, personalDetails);
+      }
+      existingPersonalDetails.user_id = id;
+      const savedPersonalDetails = await this.personalDetailsRepository.save(
+        existingPersonalDetails,
+      );
+    }
+    if (education) {
+      let existingEducation: any = await this.educationRepository.findOne({
+        where: { user_id: id },
+      });
+      if (!existingEducation) {
+        existingEducation = this.educationRepository.create(education);
+      } else {
+        Object.assign(existingEducation, education);
+      }
+      existingEducation.user_id = id;
+      const savedEducation = await this.educationRepository.save(
+        existingEducation,
+      );
+    }
     const updatedUser = await this.userRepository.findOne({ where: { id } });
     return updatedUser;
   }
