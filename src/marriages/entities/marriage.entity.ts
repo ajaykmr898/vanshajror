@@ -41,7 +41,7 @@ export class Marriage {
   extra_info: string;
 
   //@ManyToOne(() => User, user => user.marriageRequests)
-  @Column({ nullable: true })
+  @Column()
   owner_id: number;
 
   @Column({ length: 255, nullable: true })

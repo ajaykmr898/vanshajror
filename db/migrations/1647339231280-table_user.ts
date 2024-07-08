@@ -82,7 +82,7 @@ CREATE TABLE marriage_requests (
   phone character varying(255),
   email character varying(255),
   extra_info text,
-  owner_id bigint NOT NULL,
+  owner_id INT,
   status character varying(255),
   deleted boolean DEFAULT false,
   created_at TIMESTAMP NOT NULL DEFAULT now(),
