@@ -15,7 +15,15 @@ import {
 } from '../dto/create-user.dto';
 import { User } from '../entities/user.entity';
 import { v4 as uuidv4 } from 'uuid';
-import * as dayjs from 'dayjs';
+import {
+  addHours,
+  addMinutes,
+  format,
+  formatISO,
+  isBefore,
+  parseISO,
+  subSeconds,
+} from 'date-fns';
 import { MailService } from '../../mailer/mailer.service';
 
 @Injectable()
@@ -39,10 +47,16 @@ export class UsersService {
     const createdUser = this.userRepository.create(createUserDto);
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
     createdUser.regcode = otp;
-    createdUser.reqcodeexptime = dayjs().add(10, 'minutes').toISOString();
-    createdUser.reglink = uuidv4();
-    createdUser.reglinkexptime = dayjs().add(24, 'hours').toISOString();
     createdUser.issignedup = '0';
+
+    const now = new Date();
+
+    const tenMinutesFromNow = addMinutes(now, 10);
+    createdUser.reqcodeexptime = formatISO(tenMinutesFromNow);
+    createdUser.reglink = uuidv4();
+
+    const twentyFourHoursFromNow = addHours(now, 24);
+    createdUser.reglinkexptime = formatISO(twentyFourHoursFromNow);
 
     try {
       await this.mailService.sendUserConfirmation(
@@ -172,7 +186,7 @@ export class UsersService {
     const user = await this.userRepository.findOne({
       where: { email, regcode: otp },
     });
-    if (user && dayjs().isBefore(user.reqcodeexptime)) {
+    if (user && isBefore(new Date(), user.reqcodeexptime)) {
       user.issignedup = '1';
       user.regcode = null;
       user.reqcodeexptime = null;
@@ -185,7 +199,7 @@ export class UsersService {
     const user = await this.userRepository.findOne({
       where: { email, reglink: token },
     });
-    if (user && dayjs().isBefore(user.reglinkexptime)) {
+    if (user && isBefore(new Date(), user.reglinkexptime)) {
       user.issignedup = '1';
       user.reglink = null;
       user.reglinkexptime = null;
@@ -203,17 +217,19 @@ export class UsersService {
       throw new NotFoundException(`User with email ${email} does not exist`);
     }
 
-    /*if (
-      dayjs().isBefore(dayjs(user.reqcodeexptime).subtract(50, 'seconds'))
-    ) {
+    const now = new Date();
+    const bufferTime = subSeconds(user.reqcodeexptime, 50);
+    const isBeforeBuffer = isBefore(now, bufferTime);
+
+    /*if (isBeforeBuffer) {
       throw new BadRequestException(
         'You can request a new OTP after 60 seconds',
       );
     }*/
 
     user.regcode = Math.floor(100000 + Math.random() * 900000).toString();
-    user.reqcodeexptime = dayjs().add(10, 'minutes').toISOString();
-
+    const tenMinutesFromNow = addMinutes(new Date(), 10);
+    user.reqcodeexptime = formatISO(tenMinutesFromNow);
     try {
       await this.mailService.sendUserConfirmation(
         email,
