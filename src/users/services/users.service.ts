@@ -131,13 +131,12 @@ export class UsersService {
   }
 
   async findOne(id: number) {
-    //return await this.userRepository.findOne({ where: { id } });
     const user = await this.userRepository.findOne({ where: { id } });
-    user.personalDetails = await this.getPersonalDetails(id);
-    user.education = await this.getEducation(id);
     if (!user) {
       throw new NotFoundException(`User with id ${id} does not exist`);
     }
+    user.personalDetails = await this.getPersonalDetails(id);
+    user.education = await this.getEducation(id);
     return user;
   }
 
