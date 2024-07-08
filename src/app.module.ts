@@ -43,14 +43,7 @@ import * as path from 'path';
           password: configService.postgres.password,
           autoLoadEntities: true,
           keepConnectionAlive: true,
-          synchronize: true,
-          ssl: {
-            ca: fs
-              .readFileSync(
-                path.join(__dirname, '/var/task/src/certs/prod-ca.crt'),
-              )
-              .toString(),
-          },
+          ssl: true,
         };
       },
     }),

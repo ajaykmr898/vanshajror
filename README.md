@@ -17,4 +17,3 @@ phone
 
 on otp login again
 hbs template
-ca prod
