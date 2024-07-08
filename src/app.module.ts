@@ -46,7 +46,9 @@ import * as path from 'path';
           synchronize: true,
           ssl: {
             ca: fs
-              .readFileSync(path.join(__dirname, 'certs/prod-ca.crt'))
+              .readFileSync(
+                path.join(__dirname, '/var/task/src/certs/prod-ca.crt'),
+              )
               .toString(),
           },
         };
