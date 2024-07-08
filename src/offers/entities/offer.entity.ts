@@ -20,7 +20,8 @@ export class Offer {
   user_id: number;
 
   //@ManyToOne(() => User, { nullable: true })
-  owner: number;
+  @Column()
+  owner_id: number;
 
   @Column({ nullable: true })
   title: string;

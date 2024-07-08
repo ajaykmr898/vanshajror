@@ -5,6 +5,7 @@ import {
   IsNotEmpty,
   IsBoolean,
   IsObject,
+  IsNumber,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
@@ -28,6 +29,11 @@ export class UpdateMarriageDto {
   @IsString()
   @IsNotEmpty()
   job: string;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsNumber()
+  owner_id?: number;
 
   @ApiProperty()
   @IsString()

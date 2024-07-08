@@ -5,6 +5,7 @@ import {
   IsNotEmpty,
   IsBoolean,
   IsObject,
+  IsNumber,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { DefaultSuccessResponseDto } from '../../utils/dto/response.dto';
@@ -29,6 +30,11 @@ export class CreateMarriageDto {
   @IsString()
   @IsNotEmpty()
   job: string;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsNumber()
+  owner_id?: number;
 
   @ApiProperty()
   @IsString()
