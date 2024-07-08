@@ -20,8 +20,6 @@ export class tableUser1647339231280 implements MigrationInterface {
   isSignedUp character varying(255),
   resetPassLink character varying(255),
   resetPassLinkExpTime character varying(255),
-  pob jsonb,
-  por jsonb,
   level character varying(255),
   gender character varying(255),
   phone character varying(255),
@@ -31,11 +29,35 @@ export class tableUser1647339231280 implements MigrationInterface {
   CONSTRAINT "UQ_97672ac88f789774dd47f7c8be3" UNIQUE ("email"),
 );
 
+    CREATE TABLE personal_details (
+                                    id SERIAL PRIMARY KEY,
+                                    user_id INTEGER REFERENCES users(id),
+                                    religion VARCHAR(100),
+                                    caste VARCHAR(100),
+                                    subcaste VARCHAR(100),
+                                    height VARCHAR(20),
+                                    weight INTEGER,
+                                    complexion VARCHAR(50),
+                                    marital_status VARCHAR(20),
+                                    pob jsonb,
+                                    por jsonb
+    );
+
+    CREATE TABLE education (
+                             id SERIAL PRIMARY KEY,
+                             user_id INTEGER,
+                             education_level VARCHAR(100),
+                             college VARCHAR(255),
+                             degree VARCHAR(100),
+                             specialization VARCHAR(255),
+                             graduation_year INTEGER
+    );
+
 CREATE TABLE offers (
   id SERIAL PRIMARY KEY,
   types character varying(255),
-  user_id bigint NOT NULL REFERENCES users(id),
-  owner_id bigint REFERENCES users(id),
+  user_id bigint NOT NULL,
+  owner_id bigint,
   title character varying,
   description text,
   "from" DATE,

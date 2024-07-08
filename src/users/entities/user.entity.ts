@@ -46,11 +46,11 @@ export class User {
   @Column({ nullable: true })
   resetpasslinkexptime: string;
 
-  @Column({ type: 'jsonb', nullable: true })
+  /*@Column({ type: 'jsonb', nullable: true })
   pob: object;
 
   @Column({ type: 'jsonb', nullable: true })
-  por: object;
+  por: object;*/
 
   @Column({ nullable: true })
   level: string;
