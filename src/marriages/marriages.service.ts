@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Between, Like } from 'typeorm';
 import { Marriage } from './entities/marriage.entity';
@@ -14,9 +18,18 @@ export class MarriageService {
     private usersService: UsersService,
   ) {}
 
-  create(createMarriageDto: CreateMarriageDto): Promise<Marriage> {
-    const marriage = this.marriageRepository.create(createMarriageDto);
-    return this.marriageRepository.save(marriage);
+  async create(createMarriageDto: CreateMarriageDto): Promise<Marriage> {
+    const marriage = await this.marriageRepository.findOne({
+      where: { owner_id: createMarriageDto.owner_id },
+    });
+
+    if (marriage) {
+      throw new BadRequestException(
+        'marriage request for the user is already present',
+      );
+    }
+    const marriageN = this.marriageRepository.create(createMarriageDto);
+    return await this.marriageRepository.save(marriageN);
   }
 
   async findAll(): Promise<Marriage[]> {
@@ -80,15 +93,15 @@ export class MarriageService {
       created_at: Between(fromDate, toDate),
     };
 
-    if (gender) {
+    /*if (gender) {
       where.gender = gender;
-    }
+    }*/
 
     /*if (poi) {
       where.poi = Like(`%${poi}%`);
     }*/
 
-    if (study) {
+    /*if (study) {
       where.study = Like(`%${study}%`);
     }
 
@@ -106,10 +119,15 @@ export class MarriageService {
 
     if (status) {
       where.status = status;
-    }
+    }*/
 
-    return this.marriageRepository.find({
+    const marriages = await this.marriageRepository.find({
       where,
     });
+    for (let marriage of marriages) {
+      let user = await this.usersService.findOne(marriage.owner_id);
+      marriage.user = user;
+    }
+    return marriages;
   }
 }
