@@ -4,7 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, Between, Like } from 'typeorm';
+import { Repository, Between, Connection, QueryRunner } from 'typeorm';
 import { Marriage } from './entities/marriage.entity';
 import { CreateMarriageDto } from './dto/create-marriage.dto';
 import { UpdateMarriageDto } from './dto/update-marriage.dto';
@@ -12,15 +12,23 @@ import { UsersService } from '../users/services/users.service';
 
 @Injectable()
 export class MarriageService {
+  queryRunner: QueryRunner;
   constructor(
     @InjectRepository(Marriage)
     private marriageRepository: Repository<Marriage>,
     private usersService: UsersService,
-  ) {}
+    private connection: Connection, // Inject TypeORM Connection
+  ) {
+    this.queryRunner = this.connection.createQueryRunner();
+  }
 
   async create(createMarriageDto: CreateMarriageDto): Promise<Marriage> {
     const marriage = await this.marriageRepository.findOne({
-      where: { owner_id: createMarriageDto.owner_id },
+      where: {
+        owner_id: createMarriageDto.owner_id,
+        deleted: false,
+        open_to_marriage: true,
+      },
     });
 
     if (marriage) {
@@ -78,52 +86,45 @@ export class MarriageService {
     return this.marriageRepository.remove(marriage);
   }
 
-  async findFilters({
-    fromDate,
-    toDate,
-    gender,
-    poi,
-    study,
-    status,
-    name,
-    phone,
-    email,
-  }): Promise<Marriage[]> {
-    const where: any = {
-      created_at: Between(fromDate, toDate),
-    };
+  async findFilters(filters: {
+    fromDate?: Date;
+    toDate?: Date;
+    gender?: string;
+    //location?: object;
+    study?: string;
+    status?: string;
+    name?: string;
+    phone?: string;
+    email?: string;
+  }): Promise<any[]> {
+    const {
+      fromDate,
+      toDate,
+      gender,
+      //location,
+      study,
+      status,
+      name,
+      phone,
+      email,
+    } = filters;
 
-    /*if (gender) {
-      where.gender = gender;
-    }*/
+    let sql = `
+      SELECT mr.id as mrid, mr.extra_info, mr.status, mr.owner_id
+      FROM marriage_requests mr
+      JOIN users u ON mr.owner_id = u.id
+      WHERE u.deleted = false AND mr.deleted = false AND open_to_marriage = true
+    `;
 
-    /*if (poi) {
-      where.poi = Like(`%${poi}%`);
-    }*/
+    const parameters: any = [];
 
-    /*if (study) {
-      where.study = Like(`%${study}%`);
+    if (fromDate && toDate) {
+      sql += ' AND mr.created_at BETWEEN $1 AND $2';
+      parameters.push(fromDate, toDate);
     }
 
-    if (name) {
-      where.name = Like(`%${name}%`);
-    }
-
-    if (phone) {
-      where.phone = Like(`%${phone}%`);
-    }
-
-    if (email) {
-      where.email = Like(`%${email}%`);
-    }
-
-    if (status) {
-      where.status = status;
-    }*/
-
-    const marriages = await this.marriageRepository.find({
-      where,
-    });
+    await this.queryRunner.connect();
+    const marriages = await this.queryRunner.query(sql, parameters);
     for (let marriage of marriages) {
       let user = await this.usersService.findOne(marriage.owner_id);
       marriage.user = user;

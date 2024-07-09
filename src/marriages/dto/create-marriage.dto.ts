@@ -12,9 +12,8 @@ import { DefaultSuccessResponseDto } from '../../utils/dto/response.dto';
 
 export class CreateMarriageDto {
   @ApiProperty()
-  @IsString()
   @IsNotEmpty()
-  open_to_marriage: string;
+  open_to_marriage: boolean;
 
   /*@ApiProperty()
   @IsObject()

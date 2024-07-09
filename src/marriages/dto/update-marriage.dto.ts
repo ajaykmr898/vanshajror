@@ -13,7 +13,7 @@ export class UpdateMarriageDto {
   @ApiProperty()
   @IsString()
   @IsNotEmpty()
-  open_to_marriage: string;
+  open_to_marriage: boolean;
 
   /*@ApiProperty()
   @IsObject()

@@ -13,8 +13,8 @@ export class Marriage {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ length: 255 })
-  open_to_marriage: string;
+  @Column()
+  open_to_marriage: boolean;
 
   /*@Column({ type: 'jsonb', nullable: true })
   address: object;

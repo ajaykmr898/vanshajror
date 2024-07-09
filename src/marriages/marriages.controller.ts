@@ -8,6 +8,7 @@ import {
   Delete,
   UseGuards,
   Query,
+  BadRequestException,
 } from '@nestjs/common';
 import { MarriageService } from './marriages.service';
 import {
@@ -20,6 +21,7 @@ import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
+import { isValidDate } from 'rxjs/internal/util/isDate';
 
 @ApiTags('marriages')
 @Controller('marriages')
@@ -101,6 +103,12 @@ export class MarriageController {
     @Query('phone') phone: string,
     @Query('email') email: string,
   ) {
+    if (!from || !to) {
+      throw new BadRequestException(
+        'from and to fields are required and must be dates',
+      );
+    }
+
     const fromDate = new Date(from);
     const toDate = new Date(to);
 
@@ -108,7 +116,7 @@ export class MarriageController {
       fromDate,
       toDate,
       gender,
-      poi,
+      //location,
       study,
       status,
       name,
