@@ -41,7 +41,9 @@ export class MarriageService {
   }
 
   async findAll(): Promise<Marriage[]> {
-    let marriages = await this.marriageRepository.find();
+    let marriages = await this.marriageRepository.find({
+      where: { deleted: false },
+    });
     for (let marriage of marriages) {
       let user = await this.usersService.findOne(marriage.owner_id);
       marriage.user = user;
@@ -82,8 +84,8 @@ export class MarriageService {
     if (!marriage) {
       throw new NotFoundException(`marriage with id ${id} does not exist`);
     }
-
-    return this.marriageRepository.remove(marriage);
+    marriage.deleted = true;
+    return this.marriageRepository.save(marriage);
   }
 
   async findFilters(filters: {

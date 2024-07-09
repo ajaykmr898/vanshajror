@@ -82,7 +82,7 @@ CREATE TABLE marriage_requests (
   extra_info text,
   owner_id INT,
   status character varying(255),
-  open_to_marriage BOOLEAN DEFAULT false,
+  open_to_marriage BOOLEAN DEFAULT true,
   deleted boolean DEFAULT false,
   created_at TIMESTAMP NOT NULL DEFAULT now(),
   updated_at TIMESTAMP NOT NULL DEFAULT now()

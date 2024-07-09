@@ -92,8 +92,12 @@ export class QuestionsService {
   }
 
   async findAll(): Promise<QuestionResponse[]> {
-    const questions = await this.questionsRepository.find();
-    const choices = await this.choicesRepository.find();
+    const questions = await this.questionsRepository.find({
+      where: { deleted: false },
+    });
+    const choices = await this.choicesRepository.find({
+      where: { deleted: false },
+    });
     //console.log(questions, choices);
     return questions.map((question) => ({
       id: question.id,

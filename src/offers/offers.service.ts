@@ -13,7 +13,7 @@ export class OffersService {
   ) {}
 
   async findAll(): Promise<Offer[]> {
-    return this.offersRepository.find();
+    return this.offersRepository.find({ where: { deleted: false } });
   }
 
   async findOne(id: number): Promise<Offer> {
@@ -37,6 +37,10 @@ export class OffersService {
 
   async remove(id: number): Promise<void> {
     const offer = await this.findOne(id);
-    await this.offersRepository.remove(offer);
+    if (!offer) {
+      throw new NotFoundException(`Offer with ID ${id} not found`);
+    }
+    offer.deleted = true;
+    await this.offersRepository.save(offer);
   }
 }

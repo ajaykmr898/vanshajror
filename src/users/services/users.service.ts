@@ -42,7 +42,7 @@ export class UsersService {
 
   async create(createUserDto: CreateUserDto | CreateAdminDto) {
     const user = await this.userRepository.findOne({
-      where: { email: createUserDto.email },
+      where: { email: createUserDto.email, deleted: false },
     });
 
     if (user) {
@@ -100,7 +100,7 @@ export class UsersService {
   }
 
   async findAll() {
-    const users = await this.userRepository.find();
+    const users = await this.userRepository.find({ where: { deleted: false } });
     let resp = users.map((user) => {
       let personalDetails = this.getPersonalDetails(user.id);
       let education = this.getEducation(user.id);
@@ -216,13 +216,16 @@ export class UsersService {
   }
 
   async remove(id: number) {
-    const user = await this.userRepository.findOne({ where: { id } });
+    const user = await this.userRepository.findOne({
+      where: { id, deleted: false },
+    });
 
     if (!user) {
       throw new NotFoundException(`User with id ${id} does not exist`);
     }
-
-    return this.userRepository.remove(user);
+    user.deleted = true;
+    user.email = user.email + '@deleted';
+    return this.userRepository.save(user);
   }
 
   async setCurrentRefreshToken(refreshToken: string, userId: number) {

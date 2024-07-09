@@ -25,6 +25,9 @@ export class Choice {
 
   @Column()
   question_id: number;
+
+  @Column({ default: false })
+  deleted: boolean;
 }
 
 export class ChoiceResponse {

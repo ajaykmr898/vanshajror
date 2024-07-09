@@ -30,6 +30,9 @@ export class Question {
 
   //@OneToMany(() => Response, (response) => response.question)
   //responses: Response[];
+
+  @Column({ default: false })
+  deleted: boolean;
 }
 
 export class QuestionResponse {
