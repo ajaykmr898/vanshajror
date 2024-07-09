@@ -10,6 +10,7 @@ import {
 import { Role } from '../../auth/models/roles.model';
 import { PersonalDetails } from './details.entity';
 import { Education } from './education.entity';
+import { Job } from './job.entity';
 
 @Entity('users')
 export class User {
@@ -87,6 +88,10 @@ export class User {
   //@OneToOne(() => Education, { cascade: true })
   //@JoinColumn()
   education: Education;
+
+  //@OneToOne(() => Job, { cascade: true })
+  //@JoinColumn()
+  job: Job;
 
   @BeforeInsert()
   async hashPassword() {

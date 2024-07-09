@@ -27,6 +27,7 @@ import {
 import { MailService } from '../../mailer/mailer.service';
 import { PersonalDetails } from '../entities/details.entity';
 import { Education } from '../entities/education.entity';
+import { Job } from '../entities/job.entity';
 
 @Injectable()
 export class UsersService {
@@ -38,6 +39,8 @@ export class UsersService {
     private readonly personalDetailsRepository: Repository<PersonalDetails>,
     @InjectRepository(Education)
     private readonly educationRepository: Repository<Education>,
+    @InjectRepository(Job)
+    private readonly jobRepository: Repository<Job>,
   ) {}
 
   async create(createUserDto: CreateUserDto | CreateAdminDto) {
@@ -50,7 +53,7 @@ export class UsersService {
         'User with provided email is already present',
       );
     }
-    const { personalDetails, education, ...userDetails } = createUserDto;
+    const { personalDetails, education, job, ...userDetails } = createUserDto;
     const createdUser = this.userRepository.create(userDetails);
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
     createdUser.regcode = otp;
@@ -94,6 +97,13 @@ export class UsersService {
       );
       createdUser.education = savedEducations[0];
     }
+
+    if (job) {
+      const createdJobs = this.jobRepository.create(job);
+      createdJobs.user_id = saveUser.id;
+      const savedJobs = await this.jobRepository.save(createdJobs);
+      createdUser.job = savedJobs[0];
+    }
     delete saveUser.password;
     delete saveUser.refreshToken;
     return saveUser;
@@ -123,6 +133,12 @@ export class UsersService {
     return education;
   }
 
+  async getJob(userId) {
+    const job = await this.jobRepository.findOne({
+      where: { user_id: userId },
+    });
+    return job;
+  }
   async findByEmailAndGetPassword(email: string) {
     return await this.userRepository.findOne({
       select: ['id', 'password', 'role', 'issignedup'],
@@ -137,6 +153,7 @@ export class UsersService {
     }
     user.personalDetails = await this.getPersonalDetails(id);
     user.education = await this.getEducation(id);
+    user.job = await this.getJob(id);
     return user;
   }
 
@@ -177,7 +194,7 @@ export class UsersService {
       updateUserDto.password = await bcrypt.hash(updateUserDto.password, 10);
     }
 
-    const { personalDetails, education, ...userDetails } = updateUserDto;
+    const { personalDetails, education, job, ...userDetails } = updateUserDto;
 
     await this.userRepository.update(id, userDetails);
 
@@ -210,6 +227,18 @@ export class UsersService {
       const savedEducation = await this.educationRepository.save(
         existingEducation,
       );
+    }
+    if (job) {
+      let existingJob: any = await this.jobRepository.findOne({
+        where: { user_id: id },
+      });
+      if (!existingJob) {
+        existingJob = this.jobRepository.create(job);
+      } else {
+        Object.assign(existingJob, job);
+      }
+      existingJob.user_id = id;
+      const savedJob = await this.jobRepository.save(existingJob);
     }
     const updatedUser = await this.userRepository.findOne({ where: { id } });
     return updatedUser;

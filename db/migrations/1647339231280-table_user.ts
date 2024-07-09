@@ -31,7 +31,7 @@ export class tableUser1647339231280 implements MigrationInterface {
 
     CREATE TABLE personal_details (
                                     id SERIAL PRIMARY KEY,
-                                    user_id INTEGER REFERENCES users(id),
+                                    user_id INTEGER,
                                     religion VARCHAR(100),
                                     caste VARCHAR(100),
                                     subcaste VARCHAR(100),
@@ -58,6 +58,19 @@ export class tableUser1647339231280 implements MigrationInterface {
                              deleted boolean DEFAULT false,
                              created_at TIMESTAMP NOT NULL DEFAULT now(),
                              updated_at TIMESTAMP NOT NULL DEFAULT now()
+    );
+    CREATE TABLE job (
+                        id SERIAL PRIMARY KEY,
+                        title VARCHAR(255) NOT NULL,
+                        description TEXT NOT NULL,
+                        company VARCHAR(255) NOT NULL,
+                        location VARCHAR(255) NOT NULL,
+                        salary NUMERIC(10, 2) NOT NULL,
+                        is_remote BOOLEAN DEFAULT false,
+                        deleted BOOLEAN DEFAULT false,
+                        user_id INT,
+                        created_at TIMESTAMP DEFAULT now(),
+                        updated_at TIMESTAMP DEFAULT now()
     );
 
 CREATE TABLE offers (

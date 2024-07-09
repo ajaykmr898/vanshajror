@@ -12,6 +12,7 @@ import { DefaultSuccessResponseDto } from '../../utils/dto/response.dto';
 import { Type } from 'class-transformer';
 import { CreatePersonalDetailsDto } from './details.dto';
 import { CreateEducationDto } from './education.dto';
+import { CreateJobDto } from './job.dto';
 export class CreateUserDto {
   @ApiProperty()
   @IsString()
@@ -42,6 +43,11 @@ export class CreateUserDto {
   @Type(() => CreateEducationDto)
   @IsOptional()
   education: CreateEducationDto;
+
+  @ValidateNested()
+  @Type(() => CreateJobDto)
+  @IsOptional()
+  job: CreateJobDto;
 }
 
 export class CreateAdminDto extends CreateUserDto {

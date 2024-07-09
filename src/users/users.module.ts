@@ -7,9 +7,10 @@ import { UsersService } from './services/users.service';
 import { MailService } from '../mailer/mailer.service';
 import { PersonalDetails } from './entities/details.entity';
 import { Education } from './entities/education.entity';
+import { Job } from './entities/job.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User, PersonalDetails, Education])],
+  imports: [TypeOrmModule.forFeature([User, PersonalDetails, Education, Job])],
   controllers: [UsersController],
   providers: [UsersService, JwtStrategy, MailService],
   exports: [UsersService],

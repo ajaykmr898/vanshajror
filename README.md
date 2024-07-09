@@ -18,7 +18,6 @@ phone
 on otp login again
 hbs template
 
-generic data [] on success
 manage fields in tables
 questions by users
 manage swagger obj, payload and response
