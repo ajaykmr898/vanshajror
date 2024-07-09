@@ -23,3 +23,4 @@ manage fields in tables
 questions by users
 manage swagger obj, payload and response
 delete true false
+job in info

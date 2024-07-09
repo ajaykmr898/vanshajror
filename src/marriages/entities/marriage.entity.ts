@@ -14,9 +14,9 @@ export class Marriage {
   id: number;
 
   @Column({ length: 255 })
-  name: string;
+  open_to_marriage: string;
 
-  @Column({ type: 'jsonb', nullable: true })
+  /*@Column({ type: 'jsonb', nullable: true })
   address: object;
 
   @Column({ type: 'date' })
@@ -32,15 +32,13 @@ export class Marriage {
   gender: string;
 
   @Column({ length: 255, nullable: true })
-  phone: string;
+  phone: string;*/
 
-  @Column({ length: 255, nullable: true })
-  email: string;
+  user: User;
 
   @Column({ type: 'text', nullable: true })
   extra_info: string;
 
-  //@ManyToOne(() => User, user => user.marriageRequests)
   @Column()
   owner_id: number;
 

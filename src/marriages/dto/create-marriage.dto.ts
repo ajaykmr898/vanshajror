@@ -14,9 +14,9 @@ export class CreateMarriageDto {
   @ApiProperty()
   @IsString()
   @IsNotEmpty()
-  name: string;
+  open_to_marriage: string;
 
-  @ApiProperty()
+  /*@ApiProperty()
   @IsObject()
   @IsOptional()
   address?: object;
@@ -29,14 +29,13 @@ export class CreateMarriageDto {
   @ApiProperty()
   @IsString()
   @IsNotEmpty()
-  job: string;
+  job: string;*/
 
   @ApiProperty()
-  @IsOptional()
   @IsNumber()
   owner_id?: number;
 
-  @ApiProperty()
+  /*@ApiProperty()
   @IsString()
   @IsNotEmpty()
   study: string;
@@ -54,7 +53,7 @@ export class CreateMarriageDto {
   @ApiProperty()
   @IsString()
   @IsOptional()
-  email?: string;
+  email?: string;*/
 
   @ApiProperty()
   @IsString()

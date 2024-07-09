@@ -4,12 +4,14 @@ import { Repository, Between, Like } from 'typeorm';
 import { Marriage } from './entities/marriage.entity';
 import { CreateMarriageDto } from './dto/create-marriage.dto';
 import { UpdateMarriageDto } from './dto/update-marriage.dto';
+import { UsersService } from '../users/services/users.service';
 
 @Injectable()
 export class MarriageService {
   constructor(
     @InjectRepository(Marriage)
     private marriageRepository: Repository<Marriage>,
+    private usersService: UsersService,
   ) {}
 
   create(createMarriageDto: CreateMarriageDto): Promise<Marriage> {
@@ -17,8 +19,13 @@ export class MarriageService {
     return this.marriageRepository.save(marriage);
   }
 
-  findAll(): Promise<Marriage[]> {
-    return this.marriageRepository.find();
+  async findAll(): Promise<Marriage[]> {
+    let marriages = await this.marriageRepository.find();
+    for (let marriage of marriages) {
+      let user = await this.usersService.findOne(marriage.owner_id);
+      marriage.user = user;
+    }
+    return marriages;
   }
 
   async findOne(id: number): Promise<Marriage> {
@@ -28,6 +35,9 @@ export class MarriageService {
     if (!marriage) {
       throw new NotFoundException(`Marriage  with ID ${id} not found`);
     }
+    let user = await this.usersService.findOne(marriage.owner_id);
+    marriage.user = user;
+
     return marriage;
   }
 
