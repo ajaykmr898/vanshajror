@@ -25,6 +25,6 @@ export class CreateJobDto {
   @IsOptional()
   is_remote?: boolean;
 
-  @IsOptional()
-  user_id: number;
+  /*@IsOptional()
+  user_id: number;*/
 }

@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, OmitType, PartialType } from '@nestjs/swagger';
 import {
   IsEmail,
   IsEnum,
@@ -64,15 +64,17 @@ export class UpdateUserDto extends OmitType(PartialType(CreateUserDto), [
 
 export class UpdateUserDto extends CreateUserDto {}
 
-export class UserFull extends CreateUserDto {
+export class UserFull extends OmitType(PartialType(CreateUserDto), [
+  'password',
+]) {
   @ApiProperty()
   readonly id: number;
 
-  @ApiProperty()
+  /*@ApiProperty()
   readonly createdAt: Date;
 
   @ApiProperty()
-  readonly updatedAt: Date;
+  readonly updatedAt: Date;*/
 
   @ApiProperty()
   readonly role: Role;

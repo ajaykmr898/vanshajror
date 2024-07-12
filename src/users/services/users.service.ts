@@ -12,6 +12,8 @@ import {
   CreateAdminDto,
   CreateUserDto,
   UpdateUserDto,
+  UserFull,
+  UserResponseDto,
 } from '../dto/create-user.dto';
 import { User } from '../entities/user.entity';
 import { v4 as uuidv4 } from 'uuid';
@@ -28,6 +30,9 @@ import { MailService } from '../../mailer/mailer.service';
 import { PersonalDetails } from '../entities/details.entity';
 import { Education } from '../entities/education.entity';
 import { Job } from '../entities/job.entity';
+import { CreatePersonalDetailsDto } from '../dto/details.dto';
+import { CreateEducationDto } from '../dto/education.dto';
+import { CreateJobDto } from '../dto/job.dto';
 
 @Injectable()
 export class UsersService {
@@ -43,7 +48,9 @@ export class UsersService {
     private readonly jobRepository: Repository<Job>,
   ) {}
 
-  async create(createUserDto: CreateUserDto | CreateAdminDto) {
+  async create(
+    createUserDto: CreateUserDto | CreateAdminDto,
+  ): Promise<UserFull> {
     const user = await this.userRepository.findOne({
       where: { email: createUserDto.email, deleted: false },
     });
@@ -109,44 +116,54 @@ export class UsersService {
     return saveUser;
   }
 
-  async findAll() {
+  async findAll(): Promise<UserFull[]> {
     const users = await this.userRepository.find({ where: { deleted: false } });
-    let resp = users.map((user) => {
-      let personalDetails = this.getPersonalDetails(user.id);
-      let education = this.getEducation(user.id);
-      return { ...user, personalDetails, education };
-    });
+    let resp: UserFull[] = [];
+    //let resp = users.map(async (user) => {
+    for (let user of users) {
+      let personalDetails = await this.getPersonalDetails(user.id);
+      let education = await this.getEducation(user.id);
+      let job = await this.getJob(user.id);
+      resp.push({ ...user, personalDetails, education, job });
+      //return { ...user, personalDetails, education };
+      // });
+    }
     return resp;
   }
 
-  async getPersonalDetails(userId) {
+  async getPersonalDetails(userId: number): Promise<CreatePersonalDetailsDto> {
     const personalDetails = await this.personalDetailsRepository.findOne({
       where: { user_id: userId },
     });
     return personalDetails;
   }
 
-  async getEducation(userId) {
+  async getEducation(userId: number): Promise<CreateEducationDto> {
     const education = await this.educationRepository.findOne({
       where: { user_id: userId },
     });
     return education;
   }
 
-  async getJob(userId) {
+  async getJob(userId: number): Promise<CreateJobDto> {
     const job = await this.jobRepository.findOne({
       where: { user_id: userId },
     });
     return job;
   }
-  async findByEmailAndGetPassword(email: string) {
+  async findByEmailAndGetPassword(email: string): Promise<{
+    password: string;
+    id: number;
+    role: string;
+    issignedup: string;
+  }> {
     return await this.userRepository.findOne({
       select: ['id', 'password', 'role', 'issignedup'],
       where: { email },
     });
   }
 
-  async findOne(id: number) {
+  async findOne(id: number): Promise<UserFull> {
     const user = await this.userRepository.findOne({ where: { id } });
     if (!user) {
       throw new NotFoundException(`User with id ${id} does not exist`);
@@ -157,7 +174,7 @@ export class UsersService {
     return user;
   }
 
-  async findById(id: number) {
+  async findById(id: number): Promise<UserFull> {
     //return await this.userRepository.findOneOrFail({ where: { id: userId } });
     const user = await this.userRepository.findOne({ where: { id } });
 
@@ -167,13 +184,13 @@ export class UsersService {
     return user;
   }
 
-  async findByEmail(email: string) {
+  async findByEmail(email: string): Promise<UserFull> {
     return await this.userRepository.findOneOrFail({
       where: { email },
     });
   }
 
-  async update(id: number, updateUserDto: UpdateUserDto): Promise<User> {
+  async update(id: number, updateUserDto: UpdateUserDto): Promise<UserFull> {
     let updateUser = await this.userRepository.findOne({
       where: { id },
     });
@@ -198,11 +215,11 @@ export class UsersService {
 
     await this.userRepository.update(id, userDetails);
 
-    let existingPersonalDetails: any =
-      await this.personalDetailsRepository.findOne({
-        where: { user_id: id },
-      });
     if (personalDetails) {
+      let existingPersonalDetails: any =
+        await this.personalDetailsRepository.findOne({
+          where: { user_id: id },
+        });
       if (!existingPersonalDetails) {
         existingPersonalDetails =
           this.personalDetailsRepository.create(personalDetails);
@@ -240,11 +257,11 @@ export class UsersService {
       existingJob.user_id = id;
       const savedJob = await this.jobRepository.save(existingJob);
     }
-    const updatedUser = await this.userRepository.findOne({ where: { id } });
+    const updatedUser = await this.findOne(id);
     return updatedUser;
   }
 
-  async remove(id: number) {
+  async remove(id: number): Promise<UserFull> {
     const user = await this.userRepository.findOne({
       where: { id, deleted: false },
     });
@@ -295,7 +312,7 @@ export class UsersService {
     }
   }
 
-  async confirmOtp(email: string, otp: string): Promise<User> {
+  async confirmOtp(email: string, otp: string): Promise<UserFull> {
     const user = await this.userRepository.findOne({
       where: { email, regcode: otp },
     });
@@ -308,7 +325,7 @@ export class UsersService {
     throw new UnauthorizedException('Invalid or expired OTP');
   }
 
-  async confirmEmail(email: string, token: string): Promise<User> {
+  async confirmEmail(email: string, token: string): Promise<UserFull> {
     const user = await this.userRepository.findOne({
       where: { email, reglink: token },
     });

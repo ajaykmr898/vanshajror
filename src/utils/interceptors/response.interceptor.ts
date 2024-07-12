@@ -7,24 +7,18 @@ import {
 } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
-
-interface Response<T> {
-  status: string;
-  data: T;
-  message: string;
-  statusCode: number;
-}
+import { DefaultSuccessResponseDto } from '../dto/response.dto';
 
 @Injectable()
 export class ResponseFormatInterceptor<T>
-  implements NestInterceptor<T, Response<T>>
+  implements NestInterceptor<T, DefaultSuccessResponseDto<T>>
 {
   private readonly logger = new Logger(ResponseFormatInterceptor.name);
 
   intercept(
     context: ExecutionContext,
     next: CallHandler,
-  ): Observable<Response<T>> {
+  ): Observable<DefaultSuccessResponseDto<T>> {
     const request = context.switchToHttp().getRequest();
 
     return next.handle().pipe(

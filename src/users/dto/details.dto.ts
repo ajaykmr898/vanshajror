@@ -33,14 +33,14 @@ export class CreatePersonalDetailsDto {
   @IsObject()
   por: object;
 
-  @IsOptional()
-  user_id: number;
+  /*@IsOptional()
+  user_id: number;*/
 
   @IsOptional()
   @IsString()
   nationality: string;
 
-  @IsOptional()
+  /*@IsOptional()
   @IsString()
-  education: string;
+  education: string;*/
 }

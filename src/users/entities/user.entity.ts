@@ -11,6 +11,9 @@ import { Role } from '../../auth/models/roles.model';
 import { PersonalDetails } from './details.entity';
 import { Education } from './education.entity';
 import { Job } from './job.entity';
+import { CreatePersonalDetailsDto } from '../dto/details.dto';
+import { CreateEducationDto } from '../dto/education.dto';
+import { CreateJobDto } from '../dto/job.dto';
 
 @Entity('users')
 export class User {
@@ -83,15 +86,15 @@ export class User {
 
   //@OneToOne(() => PersonalDetails, { cascade: true })
   //@JoinColumn()
-  personalDetails: PersonalDetails;
+  personalDetails: CreatePersonalDetailsDto;
 
   //@OneToOne(() => Education, { cascade: true })
   //@JoinColumn()
-  education: Education;
+  education: CreateEducationDto;
 
   //@OneToOne(() => Job, { cascade: true })
   //@JoinColumn()
-  job: Job;
+  job: CreateJobDto;
 
   @BeforeInsert()
   async hashPassword() {

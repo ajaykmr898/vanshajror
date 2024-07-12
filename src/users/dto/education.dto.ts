@@ -21,6 +21,6 @@ export class CreateEducationDto {
   @IsNumber()
   graduation_year: number;
 
-  @IsOptional()
-  user_id: number;
+  /*@IsOptional()
+  user_id: number;*/
 }

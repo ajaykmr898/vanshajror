@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
+import { UserFull } from '../../users/dto/create-user.dto';
 
 export class LoginDto {
   @ApiProperty()
@@ -19,6 +20,9 @@ export class PostLoginResponse {
 
   @ApiProperty()
   readonly refreshToken: string;
+
+  @ApiProperty()
+  readonly userInfo: UserFull;
 }
 
 export class GetRefreshResponse {

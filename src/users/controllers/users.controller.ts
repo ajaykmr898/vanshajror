@@ -23,8 +23,10 @@ import {
   UpdateUserDto,
   UsersListResponseDto,
   UserResponseDto,
+  UserFull,
 } from '../dto/create-user.dto';
 import { UsersService } from '../services/users.service';
+import { DefaultSuccessResponseDto } from '../../utils/dto/response.dto';
 
 @ApiTags('users')
 @Controller('users')
@@ -39,7 +41,7 @@ export class UsersController {
   })
   @Public()
   @Post()
-  create(@Body() createUserDto: CreateUserDto) {
+  create(@Body() createUserDto: CreateUserDto): Promise<UserFull> {
     const resp = this.usersService.create(createUserDto);
     return resp;
   }
@@ -51,8 +53,8 @@ export class UsersController {
   })
   @ApiBearerAuth('access-token')
   //@Roles(Role.ADMIN)
-  @Post('admin')
-  createAdmin(@Body() creatAdminDto: CreateAdminDto) {
+  //@Post('admin')
+  createAdmin(@Body() creatAdminDto: CreateAdminDto): Promise<UserFull> {
     const resp = this.usersService.create(creatAdminDto);
     return resp;
   }
@@ -65,7 +67,7 @@ export class UsersController {
   @ApiBearerAuth('access-token')
   //@Roles(Role.ADMIN)
   @Get()
-  findAll() {
+  findAll(): Promise<UserFull[]> {
     const resp = this.usersService.findAll();
     return resp;
   }
@@ -95,31 +97,51 @@ export class UsersController {
     return this.usersService.update(id, updateUserDto);
   }
 
+  @ApiResponse({
+    status: 200,
+    isArray: false,
+    type: DefaultSuccessResponseDto,
+  })
   @ApiBearerAuth('access-token')
   //@Roles(Role.ADMIN)
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    const resp = this.usersService.remove(+id);
-    return resp;
+  async remove(@Param('id') id: string) {
+    await this.usersService.remove(+id);
   }
 
+  @ApiResponse({
+    status: 200,
+    isArray: false,
+    type: DefaultSuccessResponseDto,
+  })
   @Public()
   @Post('confirm-otp')
   async confirmOtp(@Body('email') email: string, @Body('otp') otp: string) {
-    return this.usersService.confirmOtp(email, otp);
+    await this.usersService.confirmOtp(email, otp);
   }
+
+  @ApiResponse({
+    status: 200,
+    isArray: false,
+    type: DefaultSuccessResponseDto,
+  })
   @Public()
   @Post('confirm-email')
   async confirmEmail(
     @Body('email') email: string,
     @Body('token') token: string,
   ) {
-    return this.usersService.confirmEmail(email, token);
+    await this.usersService.confirmEmail(email, token);
   }
 
+  @ApiResponse({
+    status: 200,
+    isArray: false,
+    type: DefaultSuccessResponseDto,
+  })
   @Public()
   @Post('resend-otp')
   async resendOtp(@Body('email') email: string) {
-    return await this.usersService.resendOtp(email);
+    await this.usersService.resendOtp(email);
   }
 }

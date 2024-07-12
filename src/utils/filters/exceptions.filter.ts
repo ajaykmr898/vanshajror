@@ -7,6 +7,7 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
+import { DefaultErrorResponseDto } from '../dto/response.dto';
 
 @Catch()
 export class AllExceptionsFilter implements ExceptionFilter {
@@ -27,10 +28,11 @@ export class AllExceptionsFilter implements ExceptionFilter {
         ? (exception.getResponse() as any)?.message || exception.message
         : 'Internal server error';
 
-    const errorResponse = {
+    const errorResponse: DefaultErrorResponseDto = {
       status: 'error',
       statusCode: status,
       message: message,
+      error: message,
       //timestamp: new Date().toISOString(),
       //path: request.url,
     };

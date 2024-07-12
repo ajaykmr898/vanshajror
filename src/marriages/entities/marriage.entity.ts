@@ -7,6 +7,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { User } from '../../users/entities/user.entity';
+import { UserFull } from '../../users/dto/create-user.dto';
 
 @Entity('marriage_requests')
 export class Marriage {
@@ -34,7 +35,7 @@ export class Marriage {
   @Column({ length: 255, nullable: true })
   phone: string;*/
 
-  user: User;
+  user: UserFull;
 
   @Column({ type: 'text', nullable: true })
   extra_info: string;
