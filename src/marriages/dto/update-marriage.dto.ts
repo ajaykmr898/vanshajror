@@ -11,7 +11,6 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class UpdateMarriageDto {
   @ApiProperty()
-  @IsString()
   @IsNotEmpty()
   open_to_marriage: boolean;
 

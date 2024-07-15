@@ -6,7 +6,7 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Between, Connection, QueryRunner } from 'typeorm';
 import { Marriage } from './entities/marriage.entity';
-import { CreateMarriageDto } from './dto/create-marriage.dto';
+import { CreateMarriageDto, MarriageFull } from './dto/create-marriage.dto';
 import { UpdateMarriageDto } from './dto/update-marriage.dto';
 import { UsersService } from '../users/services/users.service';
 
@@ -22,7 +22,7 @@ export class MarriageService {
     this.queryRunner = this.connection.createQueryRunner();
   }
 
-  async create(createMarriageDto: CreateMarriageDto): Promise<Marriage> {
+  async create(createMarriageDto: CreateMarriageDto): Promise<MarriageFull> {
     const marriage = await this.marriageRepository.findOne({
       where: {
         owner_id: createMarriageDto.owner_id,
@@ -36,11 +36,13 @@ export class MarriageService {
         'marriage request for the user is already present',
       );
     }
+
+    const user = await this.usersService.findOne(createMarriageDto.owner_id);
     const marriageN = this.marriageRepository.create(createMarriageDto);
     return await this.marriageRepository.save(marriageN);
   }
 
-  async findAll(): Promise<Marriage[]> {
+  async findAll(): Promise<MarriageFull[]> {
     let marriages = await this.marriageRepository.find({
       where: { deleted: false },
     });
@@ -51,7 +53,7 @@ export class MarriageService {
     return marriages;
   }
 
-  async findOne(id: number): Promise<Marriage> {
+  async findOne(id: number): Promise<MarriageFull> {
     const marriage = await this.marriageRepository.findOne({
       where: { id },
     });
@@ -67,7 +69,7 @@ export class MarriageService {
   async update(
     id: number,
     updateMarriageDto: UpdateMarriageDto,
-  ): Promise<Marriage> {
+  ): Promise<MarriageFull> {
     await this.marriageRepository.update(id, updateMarriageDto);
     const updatedMarriage = await this.marriageRepository.findOne({
       where: { id },
@@ -75,6 +77,7 @@ export class MarriageService {
     if (!updatedMarriage) {
       throw new NotFoundException(`Marriage with ID ${id} not found`);
     }
+    const user = await this.usersService.findOne(updatedMarriage.owner_id);
     return updatedMarriage;
   }
 

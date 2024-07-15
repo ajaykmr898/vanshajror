@@ -59,10 +59,10 @@ export class CreateMarriageDto {
   @IsOptional()
   extra_info?: string;
 
-  @ApiProperty()
+  /*@ApiProperty()
   @IsBoolean()
   @IsOptional()
-  deleted?: boolean;
+  deleted?: boolean;*/
 
   @ApiProperty()
   @IsString()
@@ -74,11 +74,11 @@ export class MarriageFull extends CreateMarriageDto {
   @ApiProperty()
   readonly id: number;
 
-  @ApiProperty()
+  /*@ApiProperty()
   readonly createdAt: Date;
 
   @ApiProperty()
-  readonly updatedAt: Date;
+  readonly updatedAt: Date;*/
 }
 
 export class MarriageListResponseDto extends DefaultSuccessResponseDto<

@@ -14,6 +14,7 @@ import { Job } from './job.entity';
 import { CreatePersonalDetailsDto } from '../dto/details.dto';
 import { CreateEducationDto } from '../dto/education.dto';
 import { CreateJobDto } from '../dto/job.dto';
+import { CreateMarriageDto } from '../../marriages/dto/create-marriage.dto';
 
 @Entity('users')
 export class User {
@@ -95,6 +96,8 @@ export class User {
   //@OneToOne(() => Job, { cascade: true })
   //@JoinColumn()
   job: CreateJobDto;
+
+  marriageInfo: CreateMarriageDto;
 
   @BeforeInsert()
   async hashPassword() {

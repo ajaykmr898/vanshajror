@@ -49,9 +49,9 @@ export class Marriage {
   @Column({ default: false })
   deleted: boolean;
 
-  @CreateDateColumn()
+  /*@CreateDateColumn()
   created_at: Date;
 
   @UpdateDateColumn()
-  updated_at: Date;
+  updated_at: Date;*/
 }

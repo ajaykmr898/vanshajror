@@ -13,6 +13,7 @@ import { Type } from 'class-transformer';
 import { CreatePersonalDetailsDto } from './details.dto';
 import { CreateEducationDto } from './education.dto';
 import { CreateJobDto } from './job.dto';
+import { CreateMarriageDto } from '../../marriages/dto/create-marriage.dto';
 export class CreateUserDto {
   @ApiProperty()
   @IsString()
@@ -48,6 +49,11 @@ export class CreateUserDto {
   @Type(() => CreateJobDto)
   @IsOptional()
   job: CreateJobDto;
+
+  @ValidateNested()
+  @Type(() => CreateMarriageDto)
+  @IsOptional()
+  marriageInfo: CreateMarriageDto;
 }
 
 export class CreateAdminDto extends CreateUserDto {

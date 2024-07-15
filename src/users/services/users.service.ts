@@ -33,6 +33,8 @@ import { Job } from '../entities/job.entity';
 import { CreatePersonalDetailsDto } from '../dto/details.dto';
 import { CreateEducationDto } from '../dto/education.dto';
 import { CreateJobDto } from '../dto/job.dto';
+import { Marriage } from '../../marriages/entities/marriage.entity';
+import { CreateMarriageDto } from '../../marriages/dto/create-marriage.dto';
 
 @Injectable()
 export class UsersService {
@@ -46,6 +48,8 @@ export class UsersService {
     private readonly educationRepository: Repository<Education>,
     @InjectRepository(Job)
     private readonly jobRepository: Repository<Job>,
+    @InjectRepository(Marriage)
+    private readonly marriageRepository: Repository<Marriage>,
   ) {}
 
   async create(
@@ -124,7 +128,8 @@ export class UsersService {
       let personalDetails = await this.getPersonalDetails(user.id);
       let education = await this.getEducation(user.id);
       let job = await this.getJob(user.id);
-      resp.push({ ...user, personalDetails, education, job });
+      let marriageInfo = await this.getMarriageInfo(user.id);
+      resp.push({ ...user, personalDetails, education, job, marriageInfo });
       //return { ...user, personalDetails, education };
       // });
     }
@@ -151,6 +156,13 @@ export class UsersService {
     });
     return job;
   }
+
+  async getMarriageInfo(userId: number): Promise<CreateMarriageDto> {
+    const marriage = await this.marriageRepository.findOne({
+      where: { owner_id: userId, deleted: false },
+    });
+    return marriage;
+  }
   async findByEmailAndGetPassword(email: string): Promise<{
     password: string;
     id: number;
@@ -171,6 +183,7 @@ export class UsersService {
     user.personalDetails = await this.getPersonalDetails(id);
     user.education = await this.getEducation(id);
     user.job = await this.getJob(id);
+    user.marriageInfo = await this.getMarriageInfo(id);
     return user;
   }
 
